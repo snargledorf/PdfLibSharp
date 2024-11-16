@@ -1,6 +1,6 @@
-﻿using PdfLibrary.Drawing.Units;
+﻿using PdfLib.Drawing.Units;
 
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 public abstract class Unit
 {

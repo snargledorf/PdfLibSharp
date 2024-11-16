@@ -1,4 +1,4 @@
-namespace PdfLibrary.Elements.Layout;
+namespace PdfLib.Elements.Layout;
 
 public interface IContainer : IElement, IElementAlignment, IFont, IStringFormat
 {

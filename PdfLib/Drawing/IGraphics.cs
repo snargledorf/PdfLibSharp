@@ -1,4 +1,4 @@
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 internal interface IGraphics : IMeasureGraphics
 {

@@ -1,7 +1,7 @@
-using PdfLibrary.Drawing;
-using PdfLibrary.Elements;
+using PdfLib.Drawing;
+using PdfLib.Elements;
 
-namespace PdfLibrary.Layout;
+namespace PdfLib.Layout;
 
 internal class ImageLayout(Image image, Point point, Size contentSize, Margins margins, Pen? borderPen)
     : ElementLayout(point, contentSize, margins, borderPen), IImageLayout

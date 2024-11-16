@@ -1,9 +1,9 @@
-using PdfLibrary.Drawing;
-using PdfLibrary.Elements;
-using PdfLibrary.Elements.Content;
-using PdfLibrary.Elements.Layout;
+using PdfLib.Drawing;
+using PdfLib.Elements;
+using PdfLib.Elements.Content;
+using PdfLib.Elements.Layout;
 
-namespace PdfLibrary.Layout;
+namespace PdfLib.Layout;
 
 internal static class StackContainerLayoutGeneratorExtensions
 {

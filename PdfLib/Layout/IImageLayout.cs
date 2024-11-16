@@ -1,6 +1,6 @@
-using PdfLibrary.Drawing;
+using PdfLib.Drawing;
 
-namespace PdfLibrary.Layout;
+namespace PdfLib.Layout;
 
 internal interface IImageLayout : ILayout
 {

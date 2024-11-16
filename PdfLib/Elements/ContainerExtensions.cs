@@ -1,8 +1,8 @@
-using PdfLibrary.Drawing;
-using PdfLibrary.Elements.Content;
-using PdfLibrary.Elements.Layout;
+using PdfLib.Drawing;
+using PdfLib.Elements.Content;
+using PdfLib.Elements.Layout;
 
-namespace PdfLibrary.Elements;
+namespace PdfLib.Elements;
 
 public static class ContainerExtensions
 {

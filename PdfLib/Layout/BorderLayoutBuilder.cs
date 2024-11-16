@@ -1,7 +1,7 @@
-using PdfLibrary.Drawing;
-using PdfLibrary.Elements;
+using PdfLib.Drawing;
+using PdfLib.Elements;
 
-namespace PdfLibrary.Layout;
+namespace PdfLib.Layout;
 
 internal abstract class BorderLayoutBuilder(IElement element, Size contentSize) : LayoutBuilderBase(element, contentSize), ILayoutBuilder
 {

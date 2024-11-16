@@ -1,6 +1,6 @@
-using PdfLibrary.Drawing;
+using PdfLib.Drawing;
 
-namespace PdfLibrary.Elements.Layout;
+namespace PdfLib.Elements.Layout;
 
 public interface IGap
 {

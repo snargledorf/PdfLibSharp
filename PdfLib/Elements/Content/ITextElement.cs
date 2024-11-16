@@ -1,4 +1,4 @@
-namespace PdfLibrary.Elements.Content;
+namespace PdfLib.Elements.Content;
 
 public interface ITextElement : IElement, IFont, IBrush, IStringFormat
 {

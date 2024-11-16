@@ -1,6 +1,6 @@
 using PdfSharp.Drawing;
 
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 public abstract class Brush(XBrush brush)
 {

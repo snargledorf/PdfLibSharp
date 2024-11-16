@@ -1,6 +1,6 @@
 using PdfSharp.Drawing;
 
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 public readonly record struct Size(Dimension Width, Dimension Height)
 {

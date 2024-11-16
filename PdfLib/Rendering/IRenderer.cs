@@ -1,6 +1,6 @@
-using PdfLibrary.Layout;
+using PdfLib.Layout;
 
-namespace PdfLibrary.Rendering;
+namespace PdfLib.Rendering;
 
 internal interface IRenderer
 {

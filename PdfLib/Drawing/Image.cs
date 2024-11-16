@@ -1,6 +1,6 @@
 using PdfSharp.Drawing;
 
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 public sealed class Image
 {

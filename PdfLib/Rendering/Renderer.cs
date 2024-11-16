@@ -1,9 +1,9 @@
-using PdfLibrary.Drawing;
-using PdfLibrary.Elements;
-using PdfLibrary.Elements.Content;
-using PdfLibrary.Layout;
+using PdfLib.Drawing;
+using PdfLib.Layout;
+using PdfLib.Elements;
+using PdfLib.Elements.Content;
 
-namespace PdfLibrary.Rendering;
+namespace PdfLib.Rendering;
 
 internal class Renderer(IGraphics graphics) : IRenderer
 {

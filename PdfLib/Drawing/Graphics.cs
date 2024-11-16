@@ -1,8 +1,8 @@
-using PdfLibrary.Rendering;
+using PdfLib.Rendering;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 internal sealed class Graphics : IGraphics
 {

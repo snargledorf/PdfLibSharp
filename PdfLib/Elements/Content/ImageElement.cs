@@ -1,6 +1,6 @@
-using PdfLibrary.Drawing;
+using PdfLib.Drawing;
 
-namespace PdfLibrary.Elements.Content;
+namespace PdfLib.Elements.Content;
 
 internal class ImageElement(Image image) : BaseElement, IImageElement
 {

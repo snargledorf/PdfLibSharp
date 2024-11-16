@@ -1,8 +1,8 @@
-using PdfLibrary.Drawing;
-using PdfLibrary.Elements;
-using PdfLibrary.Elements.Content;
+using PdfLib.Drawing;
+using PdfLib.Elements.Content;
+using PdfLib.Elements;
 
-namespace PdfLibrary.Layout;
+namespace PdfLib.Layout;
 
 internal static class ImageLayoutGeneratorExtensions
 {

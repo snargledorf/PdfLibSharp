@@ -1,6 +1,6 @@
 using PdfSharp.Drawing;
 
-namespace PdfLibrary.Elements;
+namespace PdfLib.Elements;
 
 [Flags]
 public enum FontStyles

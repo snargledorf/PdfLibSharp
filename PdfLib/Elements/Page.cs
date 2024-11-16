@@ -1,6 +1,6 @@
-using PdfLibrary.Elements.Layout;
+using PdfLib.Elements.Layout;
 
-namespace PdfLibrary.Elements;
+namespace PdfLib.Elements;
 
 internal sealed class Page : StackContainer, IPage
 {

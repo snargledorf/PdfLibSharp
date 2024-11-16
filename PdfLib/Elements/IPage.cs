@@ -1,6 +1,6 @@
-using PdfLibrary.Elements.Layout;
+using PdfLib.Elements.Layout;
 
-namespace PdfLibrary.Elements;
+namespace PdfLib.Elements;
 
 public interface IPage : IStackContainer
 {

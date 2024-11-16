@@ -1,7 +1,7 @@
-using PdfLibrary.Drawing;
-using PdfLibrary.Elements.Content;
+using PdfLib.Drawing;
+using PdfLib.Elements.Content;
 
-namespace PdfLibrary.Layout;
+namespace PdfLib.Layout;
 
 internal class TextLayoutBuilder(ITextElement textElement, Size contentSize, Font font, StringFormat stringFormat)
     : BorderLayoutBuilder(textElement, contentSize)

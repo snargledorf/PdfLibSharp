@@ -1,6 +1,6 @@
-using PdfLibrary.Drawing;
+using PdfLib.Drawing;
 
-namespace PdfLibrary.Elements.Content;
+namespace PdfLib.Elements.Content;
 
 public interface IImageElement : IElement
 {

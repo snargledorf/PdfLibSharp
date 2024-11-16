@@ -1,6 +1,6 @@
-using PdfLibrary.Drawing;
+using PdfLib.Drawing;
 
-namespace PdfLibrary.Elements;
+namespace PdfLib.Elements;
 
 internal class BaseElement : IElement
 {

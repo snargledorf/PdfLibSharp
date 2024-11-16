@@ -1,7 +1,7 @@
-using PdfLibrary.Elements.Content;
+using PdfLib.Elements.Content;
 using PdfSharp.Drawing;
 
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 public sealed class StringFormat
 {

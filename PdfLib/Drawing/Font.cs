@@ -1,7 +1,7 @@
-using PdfLibrary.Elements;
+using PdfLib.Elements;
 using PdfSharp.Drawing;
 
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 public record Font(string Family, double Size, FontStyles FontStyles = FontStyles.Normal)
 {

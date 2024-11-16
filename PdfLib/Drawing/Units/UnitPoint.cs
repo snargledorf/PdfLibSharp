@@ -1,4 +1,4 @@
-namespace PdfLibrary.Drawing.Units;
+namespace PdfLib.Drawing.Units;
 
 internal sealed class UnitPoint : Unit
 {

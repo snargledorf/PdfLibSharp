@@ -1,7 +1,7 @@
-using PdfLibrary.Drawing;
-using PdfLibrary.Elements.Content;
+using PdfLib.Drawing;
+using PdfLib.Elements.Content;
 
-namespace PdfLibrary.Layout;
+namespace PdfLib.Layout;
 
 internal class ImageLayoutBuilder(IImageElement imageElement, Size contentSize) : BorderLayoutBuilder(imageElement, contentSize)
 {

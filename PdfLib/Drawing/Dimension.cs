@@ -1,4 +1,4 @@
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 public readonly record struct Dimension(double Value, Unit? Unit) : IComparable<Dimension>
 {

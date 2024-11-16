@@ -1,4 +1,4 @@
-namespace PdfLibrary.Elements;
+namespace PdfLib.Elements;
 
 public interface ISizing
 {

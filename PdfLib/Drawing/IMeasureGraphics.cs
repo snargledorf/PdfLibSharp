@@ -1,4 +1,4 @@
-namespace PdfLibrary.Drawing;
+namespace PdfLib.Drawing;
 
 public interface IMeasureGraphics : IDisposable
 {

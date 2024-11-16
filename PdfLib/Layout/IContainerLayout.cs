@@ -1,4 +1,4 @@
-namespace PdfLibrary.Layout;
+namespace PdfLib.Layout;
 
 internal interface IContainerLayout : ILayout
 {

@@ -1,9 +1,9 @@
-using PdfLibrary.Drawing;
-using PdfLibrary.Elements;
-using PdfLibrary.Layout;
+using PdfLib.Drawing;
+using PdfLib.Elements;
+using PdfLib.Layout;
 using PdfSharp.Pdf;
 
-namespace PdfLibrary.Rendering;
+namespace PdfLib.Rendering;
 
 public static class PdfRenderer
 {
