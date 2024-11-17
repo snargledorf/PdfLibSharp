@@ -1,15 +1,16 @@
+using System.Text;
 using PdfLib.Drawing;
 using PdfLib.Elements.Content;
 
 namespace PdfLib.Layout;
 
-internal class TextLayoutBuilder(ITextElement textElement, Size contentSize, Font font, StringFormat stringFormat)
+internal class TextLayoutBuilder(ITextElement textElement, IReadOnlyCollection<Line> lines, Size contentSize, Font font, StringFormat stringFormat)
     : BorderLayoutBuilder(textElement, contentSize)
 {
     protected override ILayout BuildLayout(Rectangle bounds, Pen? borderPen)
     {
         return new TextLayout(
-            textElement.Text,
+            lines,
             bounds.Point,
             ContentSize,
             textElement.Margins,
@@ -19,3 +20,7 @@ internal class TextLayoutBuilder(ITextElement textElement, Size contentSize, Fon
             borderPen);
     }
 }
+
+internal record Word(string Text, Size Size);
+
+internal record Line(string LineText, Rectangle ContentBounds);

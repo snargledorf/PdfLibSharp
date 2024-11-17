@@ -1,5 +1,7 @@
+using System.Text;
 using PdfLib.Drawing;
 using PdfLib.Elements.Content;
+using PdfLib.Elements.Layout;
 
 namespace PdfLib.Layout;
 
@@ -11,13 +13,42 @@ internal static class TextElementExtensions
         font = textElement.GetFont(font);
         stringFormat = textElement.StringFormat ?? stringFormat;
         
-        Size contentSize = textElement.GetContentSize(font, measureGraphics);
-        return new TextLayoutBuilder(textElement, contentSize, font, stringFormat);
+        IReadOnlyCollection<Word> words = GetWords(textElement.Text, font, measureGraphics);
+        
+        Size contentSize = words.Select(word => word.Size).GetCombinedSize(Direction.Horizontal);
+        contentSize = textElement.GetSize(contentSize);
+        
+        return new TextLayoutBuilder(textElement, words, contentSize, font, stringFormat);
     }
 
-    internal static Size GetContentSize(this ITextElement textElement, Font font, IMeasureGraphics measureGraphics)
+    private static IReadOnlyCollection<Line> GetLines(string text, Font font, IMeasureGraphics measureGraphics)
     {
-        Size measureString = measureGraphics.MeasureString(textElement.Text, font);
-        return textElement.GetSize(measureString);
+        // TODO: Handle lines in text
+        
+        var lines = new List<Line>();
+        var lineBuilder = new StringBuilder();
+        Size lineSize = ContentSize with { Width = 0 };
+        Point linePoint = bounds.Point;
+        foreach (Word word in words)
+        {
+            if (lineSize.Width + word.Size.Width > bounds.Size.Width)
+            {
+                lines.Add(new Line(lineBuilder.ToString(), new Rectangle(linePoint, lineSize)));
+                lineBuilder.Clear();
+                lineSize = ContentSize with { Width = 0 };
+                linePoint = linePoint with { X = linePoint.X + lineSize.Width };
+            }
+                
+            lineBuilder.Append(word.Text);
+            lineSize = lineSize with { Width = lineSize.Width + word.Size.Width };
+        }
+        
+        lines.Add(new Line(lineBuilder.ToString(), new Rectangle(bounds.Point, lineSize));
+    }
+
+    private static IReadOnlyCollection<Word> GetWords(string text, Font font, IMeasureGraphics measureGraphics)
+    {
+        string[] words = text.Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
+        return words.Select(word => new Word(word, measureGraphics.MeasureString(word, font))).ToArray();
     }
 }

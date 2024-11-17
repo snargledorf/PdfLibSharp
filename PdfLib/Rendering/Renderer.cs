@@ -41,21 +41,24 @@ internal class Renderer(IGraphics graphics) : IRenderer
 
     private void RenderText(ITextLayout textLayout)
     {
-        Rectangle bounds = textLayout.ContentBounds;
-        
-        if (textLayout.Format == StringFormat.BaseLineLeft)
+        foreach (Line line in textLayout.Lines)
         {
-            // BaseLineLeft strings need to have a height of 0
-            bounds = bounds with
+            Rectangle bounds = line.Bounds;
+        
+            if (textLayout.Format == StringFormat.BaseLineLeft)
             {
-                Size = bounds.Size with
+                // BaseLineLeft strings need to have a height of 0
+                bounds = bounds with
                 {
-                    Height = 0
-                }
-            };
+                    Size = bounds.Size with
+                    {
+                        Height = 0
+                    }
+                };
+            }
+            
+            graphics.DrawString(line.LineText, textLayout.Font, textLayout.Brush, bounds, textLayout.Format);   
         }
-
-        graphics.DrawString(textLayout.Text, textLayout.Font, textLayout.Brush, bounds, textLayout.Format);
     }
 
     private void RenderImage(IImageLayout imageLayout)
