@@ -4,7 +4,7 @@ using PdfLib.Elements;
 
 namespace PdfLib.Layout;
 
-internal static class ImageLayoutGeneratorExtensions
+internal static class ImageElementExtensions
 {
     internal static ILayoutBuilder GetLayoutBuilder(this IImageElement imageElement)
     {

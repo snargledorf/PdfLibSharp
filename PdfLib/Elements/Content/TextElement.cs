@@ -2,7 +2,7 @@ using PdfLib.Drawing;
 
 namespace PdfLib.Elements.Content;
 
-internal class TextElement(string text) : BaseElement, ITextElement
+internal class TextElement(string text) : BaseBorderElement, ITextElement
 {
     public string Text { get; } = text;
     public string? FontFamily { get; set; }

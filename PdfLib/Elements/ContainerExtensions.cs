@@ -26,4 +26,21 @@ public static class ContainerExtensions
         container.Add(stack);
         return stack;
     }
+
+    public static ILineElement AddLine(this IContainer container, Dimension width)
+    {
+        return AddLine(container, width, Color.Black);
+    }
+
+    public static ILineElement AddLine(this IContainer container, Dimension width, Color color)
+    {
+        return AddLine(container, new Pen(color, width));
+    }
+
+    public static ILineElement AddLine(this IContainer container, Pen pen)
+    {
+        var lineElement = new LineElement(pen);
+        container.Add(lineElement);
+        return lineElement;
+    }
 }

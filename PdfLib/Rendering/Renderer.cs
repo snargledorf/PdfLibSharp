@@ -20,10 +20,18 @@ internal class Renderer(IGraphics graphics) : IRenderer
             case IContainerLayout containerLayout:
                 RenderContainer(containerLayout);
                 break;
+            case ILineLayout lineLayout:
+                RenderLine(lineLayout);
+                break;
         }
 
-        if (layout.BorderPen is { } borderPen)
+        if (layout is IBorderLayout { BorderPen: { } borderPen })
             RenderBorder(layout.ContentBounds, borderPen);
+    }
+
+    private void RenderLine(ILineLayout lineLayout)
+    {
+        graphics.DrawLine(lineLayout.Pen, lineLayout.Start, lineLayout.End);
     }
 
     private void RenderBorder(Rectangle rect, Pen borderPen)

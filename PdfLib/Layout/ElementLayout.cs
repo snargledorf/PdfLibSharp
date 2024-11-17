@@ -3,7 +3,7 @@ using PdfLib.Elements;
 
 namespace PdfLib.Layout;
 
-internal abstract class ElementLayout(Point point, Size contentSize, Margins margins, Pen? borderPen) : ILayout
+internal abstract class ElementLayout(Point point, Size contentSize, Margins margins) : ILayout
 {
     public Rectangle OuterBounds { get; } = new(
         Point: point,
@@ -15,6 +15,4 @@ internal abstract class ElementLayout(Point point, Size contentSize, Margins mar
         Point: point + new Point(margins.Left, margins.Top),
         Size: contentSize
     );
-    
-    public Pen? BorderPen { get; } = borderPen;
 }

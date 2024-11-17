@@ -13,4 +13,6 @@ public readonly record struct Point(Dimension X, Dimension Y)
     public static implicit operator XPoint(Point p) => new(p.X, p.Y);
     
     public static implicit operator Point(XPoint p) => new(p.X, p.Y);
+    
+    public static Point operator +(Point p, Size size) => new(p.X + size.Width, p.Y + size.Height);
 }

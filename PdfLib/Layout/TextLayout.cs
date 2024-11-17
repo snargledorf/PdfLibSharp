@@ -12,7 +12,7 @@ internal class TextLayout(
     StringFormat format,
     Brush brush,
     Pen? borderPen)
-    : ElementLayout(point, contentSize, margins, borderPen), ITextLayout
+    : BorderElementLayout(point, contentSize, margins, borderPen), ITextLayout
 {
     public string Text { get; } = text;
     public StringFormat Format { get; } = format;

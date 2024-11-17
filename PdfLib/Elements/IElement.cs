@@ -1,3 +1,3 @@
 namespace PdfLib.Elements;
 
-public interface IElement : IMargins, ISize, ISizing, IBorder;
+public interface IElement : IMargins, ISize, ISizing;

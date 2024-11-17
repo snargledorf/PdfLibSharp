@@ -3,7 +3,7 @@ using PdfLib.Drawing;
 
 namespace PdfLib.Elements.Layout;
 
-internal abstract class Container : BaseElement, IContainer
+internal abstract class Container : BaseBorderElement, IContainer
 {
     private readonly List<IElement> _elements = [];
     

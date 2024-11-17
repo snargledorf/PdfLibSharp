@@ -3,7 +3,7 @@ using PdfLib.Elements;
 
 namespace PdfLib.Layout;
 
-internal abstract class LayoutBuilderBase(IElement element, Size contentSize)
+internal abstract class LayoutBuilderBase(IElement element, Size contentSize) : ILayoutBuilder
 {
     public Size OuterSize { get; } = new
     (

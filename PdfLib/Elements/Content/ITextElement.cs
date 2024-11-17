@@ -1,6 +1,6 @@
 namespace PdfLib.Elements.Content;
 
-public interface ITextElement : IElement, IFont, IBrush, IStringFormat
+public interface ITextElement : IBorderElement, IFont, IBrush, IStringFormat
 {
     string Text { get; }
 }

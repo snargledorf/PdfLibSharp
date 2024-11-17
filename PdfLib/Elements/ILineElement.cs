@@ -3,7 +3,7 @@ using PdfLib.Elements.Layout;
 
 namespace PdfLib.Elements;
 
-public interface IPage : IStackContainer
+public interface ILineElement : IElement, IDirection
 {
-    Pdf Pdf { get; }
+    Pen Pen { get; }
 }

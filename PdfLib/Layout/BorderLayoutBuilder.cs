@@ -3,13 +3,13 @@ using PdfLib.Elements;
 
 namespace PdfLib.Layout;
 
-internal abstract class BorderLayoutBuilder(IElement element, Size contentSize) : LayoutBuilderBase(element, contentSize), ILayoutBuilder
+internal abstract class BorderLayoutBuilder(IBorderElement element, Size contentSize) : LayoutBuilderBase(element, contentSize), ILayoutBuilder
 {
     public override ILayout BuildLayout(Rectangle bounds)
     {
         Pen? borderPen;
-        if (Element.BorderColor is { } borderColor)
-            borderPen = new Pen(borderColor, Element.BorderWidth ?? 1);
+        if (element.BorderColor is { } borderColor)
+            borderPen = new Pen(borderColor, element.BorderWidth ?? 1);
         else
             borderPen = null;
         

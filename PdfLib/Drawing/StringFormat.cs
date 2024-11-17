@@ -8,8 +8,10 @@ public sealed class StringFormat
     private readonly XStringFormat _stringFormat;
 
     public static readonly StringFormat BaseLineLeft = XStringFormats.BaseLineLeft;
-    
+
     public static readonly StringFormat TopLeft = XStringFormats.TopLeft;
+
+    public static readonly StringFormat CenterRight = XStringFormats.CenterRight;
 
     private StringFormat(XStringFormat stringFormat)
     {
