@@ -15,6 +15,7 @@ internal abstract class Container : BaseBorderElement, IContainer
     public double? FontSize { get; set; }
     public FontStyles? FontStyles { get; set; }
     public Color? FontColor { get; set; }
+    public double? LineHeight { get; set; }
 
     public ElementAlignment ElementAlignment { get; set; }
     

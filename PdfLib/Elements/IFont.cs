@@ -8,4 +8,5 @@ public interface IFont
     double? FontSize { get; set; }
     FontStyles? FontStyles { get; set; }
     Color? FontColor { get; set; }
+    double? LineHeight { get; set; }
 }

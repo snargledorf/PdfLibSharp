@@ -9,11 +9,12 @@ internal static class TextElementExtensions
     internal static ILayoutBuilder GetLayoutBuilder(this ITextElement textElement, LayoutScope scope, IMeasureGraphics measureGraphics)
     {
         Font font = textElement.GetFont(scope.Font);
+        double lineHeight = textElement.LineHeight ?? scope.LineHeight;
         StringFormat stringFormat = textElement.StringFormat ?? scope.StringFormat;
         Color fontColor = textElement.FontColor ?? scope.FontColor;
-        
-        IReadOnlyCollection<IReadOnlyCollection<Word>> lines = GetLines(textElement.Text, font, measureGraphics);
 
+
+        IReadOnlyCollection<IReadOnlyCollection<Word>> lines = GetLines(textElement.Text, font, lineHeight, measureGraphics);
         Size contentSize;
         if (lines.Count == 0)
         {
@@ -29,12 +30,13 @@ internal static class TextElementExtensions
         return new TextLayoutBuilder(textElement, lines, contentSize, font, fontColor, stringFormat);
     }
 
-    private static IReadOnlyCollection<IReadOnlyCollection<Word>> GetLines(string text, Font font, IMeasureGraphics measureGraphics)
+    private static IReadOnlyCollection<IReadOnlyCollection<Word>> GetLines(string text, Font font,
+        double lineHeight, IMeasureGraphics measureGraphics)
     {
         var lines = new List<IReadOnlyCollection<Word>>();
         var lineWords = new List<Word>();
 
-        IEnumerable<Word> words = GetWords(text, font, measureGraphics);
+        IEnumerable<Word> words = GetWords(text, font, lineHeight, measureGraphics);
         foreach (Word word in words)
         {
             if (word.Text == Environment.NewLine || word.Text == "\n" || word.Text == "\r")
@@ -54,14 +56,23 @@ internal static class TextElementExtensions
         return lines.ToArray();
     }
 
-    private static IEnumerable<Word> GetWords(string text, Font font, IMeasureGraphics measureGraphics)
+    private static IEnumerable<Word> GetWords(string text, Font font, double lineHeight,
+        IMeasureGraphics measureGraphics)
     {
         IEnumerable<string> words = text.SplitBy(" ")
             .SplitBy("\t")
             .SplitBy("\r\n");
 
         foreach (string word in words)
-            yield return new Word(word, measureGraphics.MeasureString(word, font));
+        {
+            Size size = measureGraphics.MeasureString(word, font);
+            size = size with
+            {
+                Height = size.Height * lineHeight
+            };
+            
+            yield return new Word(word, size);
+        }
     }
 
     private static IEnumerable<string> SplitBy(this string str, string splitChar)

@@ -34,6 +34,7 @@ public sealed class Pdf
     }
 
     public Color DefaultFontColor { get; set; } = Color.Black;
+    public double DefaultLineHeight { get; set; } = 1;
 
     public IPage AddPage()
     {
