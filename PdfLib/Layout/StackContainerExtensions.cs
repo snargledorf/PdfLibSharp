@@ -5,16 +5,17 @@ namespace PdfLib.Layout;
 
 internal static class StackContainerExtensions
 {
-    public static ILayoutBuilder GetLayoutBuilder(this IStackContainer stackContainer, Font font,
-        Color fontColor,
-        StringFormat stringFormat, ILayoutBuilderFactory layoutBuilderFactory)
+    public static ILayoutBuilder GetLayoutBuilder(this IStackContainer stackContainer, LayoutScope scope, ILayoutBuilderFactory layoutBuilderFactory)
     {
-        font = stackContainer.GetFont(font);
-        fontColor = stackContainer.FontColor ?? fontColor;
-        stringFormat = stackContainer.StringFormat ?? stringFormat;
+        scope = new LayoutScope
+        (
+            stackContainer.GetFont(scope.Font),
+            stackContainer.StringFormat ?? scope.StringFormat,
+            stackContainer.FontColor ?? scope.FontColor
+        );
 
         ILayoutBuilder[] childLayoutBuilders = stackContainer.Elements
-            .Select(element => layoutBuilderFactory.GetLayoutBuilder(element, font, fontColor, stringFormat))
+            .Select(element => layoutBuilderFactory.GetLayoutBuilder(element, scope))
             .ToArray();
 
         Size contentSize = childLayoutBuilders

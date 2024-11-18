@@ -6,13 +6,11 @@ namespace PdfLib.Layout;
 
 internal static class TextElementExtensions
 {
-    internal static ILayoutBuilder GetLayoutBuilder(this ITextElement textElement, Font font,
-        Color fontColor,
-        StringFormat stringFormat, IMeasureGraphics measureGraphics)
+    internal static ILayoutBuilder GetLayoutBuilder(this ITextElement textElement, LayoutScope scope, IMeasureGraphics measureGraphics)
     {
-        font = textElement.GetFont(font);
-        stringFormat = textElement.StringFormat ?? stringFormat;
-        fontColor = textElement.FontColor ?? fontColor;
+        Font font = textElement.GetFont(scope.Font);
+        StringFormat stringFormat = textElement.StringFormat ?? scope.StringFormat;
+        Color fontColor = textElement.FontColor ?? scope.FontColor;
         
         IReadOnlyCollection<IReadOnlyCollection<Word>> lines = GetLines(textElement.Text, font, measureGraphics);
 

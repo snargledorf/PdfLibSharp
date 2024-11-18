@@ -11,9 +11,9 @@ internal class LayoutGenerator(IMeasureGraphics measureGraphics) : ILayoutGenera
 
     public IMeasureGraphics MeasureGraphics { get; } = measureGraphics;
 
-    public ILayout GenerateLayout(IElement element, Rectangle bounds, Font font, Color fontColor, StringFormat stringFormat)
+    public ILayout GenerateLayout(IElement element, Rectangle bounds, LayoutScope scope)
     {
-        ILayoutBuilder layoutBuilder = _layoutBuilderFactory.GetLayoutBuilder(element, font, fontColor, stringFormat);
+        ILayoutBuilder layoutBuilder = _layoutBuilderFactory.GetLayoutBuilder(element, scope);
         return layoutBuilder.BuildLayout(bounds);
     }
 }
