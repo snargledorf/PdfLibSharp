@@ -4,7 +4,7 @@ using PdfLib.Elements;
 namespace PdfLib.Layout;
 
 internal class TextLayout(
-    IReadOnlyCollection<Line> lines,
+    IReadOnlyCollection<TextLineLayout> lines,
     Point point,
     Size contentSize,
     Margins margins,
@@ -14,7 +14,7 @@ internal class TextLayout(
     Pen? borderPen)
     : BorderElementLayout(point, contentSize, margins, borderPen), ITextLayout
 {
-    public IReadOnlyCollection<Line> Lines { get; } = lines;
+    public IReadOnlyCollection<TextLineLayout> Lines { get; } = lines;
     public StringFormat Format { get; } = format;
     public Brush Brush { get; } = brush;
     public Font Font { get; } = font;

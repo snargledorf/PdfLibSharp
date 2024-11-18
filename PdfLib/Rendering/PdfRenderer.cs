@@ -18,13 +18,14 @@ public static class PdfRenderer
                 cancellationToken.ThrowIfCancellationRequested();
                 
                 PdfPage pdfPage = pdfDocument.AddPage();
+                pdfPage.Size = pdf.DefaultPageSize;
 
                 Size pageSize = page.GetSize(pdf.DefaultPageSize.Size);
                 
                 using IMeasureGraphics measureGraphics = Graphics.ForMeasure(pageSize);
                 
                 var layoutGenerator = new LayoutGenerator(measureGraphics);
-                ILayout pageLayout = layoutGenerator.GenerateLayout(page, new Rectangle(Point.Zero, pageSize), pdf.DefaultFont, pdf.DefaultStringFormat);
+                ILayout pageLayout = layoutGenerator.GenerateLayout(page, new Rectangle(Point.Zero, pageSize), pdf.DefaultFont, pdf.DefaultFontColor, pdf.DefaultStringFormat);
 
                 using IGraphics graphics = Graphics.FromPdfPage(pdfPage);
 

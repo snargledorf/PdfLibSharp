@@ -6,5 +6,5 @@ namespace PdfLib.Layout;
 internal interface ILayoutGenerator
 {
     IMeasureGraphics MeasureGraphics { get; }
-    ILayout GenerateLayout(IElement element, Rectangle bounds, Font font, StringFormat stringFormat);
+    ILayout GenerateLayout(IElement element, Rectangle bounds, Font font, Color fontColor, StringFormat stringFormat);
 }

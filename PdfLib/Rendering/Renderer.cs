@@ -41,9 +41,9 @@ internal class Renderer(IGraphics graphics) : IRenderer
 
     private void RenderText(ITextLayout textLayout)
     {
-        foreach (Line line in textLayout.Lines)
+        foreach (TextLineLayout line in textLayout.Lines)
         {
-            Rectangle bounds = line.Bounds;
+            Rectangle bounds = line.ContentBounds;
         
             if (textLayout.Format == StringFormat.BaseLineLeft)
             {
@@ -57,7 +57,7 @@ internal class Renderer(IGraphics graphics) : IRenderer
                 };
             }
             
-            graphics.DrawString(line.LineText, textLayout.Font, textLayout.Brush, bounds, textLayout.Format);   
+            graphics.DrawString(line.Text, textLayout.Font, textLayout.Brush, bounds, textLayout.Format);   
         }
     }
 

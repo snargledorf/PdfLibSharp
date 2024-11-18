@@ -14,76 +14,140 @@ internal class StackLayoutBuilder(
         .Where(childLayoutBuilder => childLayoutBuilder.Element.Sizing == ElementSizing.Content)
         .ToArray();
 
-    private Size SizeOfContentSizedElements
+    private Dimension GapsSum
     {
         get
         {
-            if (_contentSizedElements.Count == 0)
-                return new Size();
-
-            return _contentSizedElements
-                .Select(childLayoutBuilder => childLayoutBuilder.OuterSize)
-                .GetCombinedSize(stackContainer.Direction);
+            int gapsCount = stackContainer.Elements.Count - 1;
+            return gapsCount >= 0 ? stackContainer.Gap * gapsCount : 0;
         }
     }
 
     protected override ILayout BuildLayout(Rectangle bounds, Pen? borderPen)
     {
-        Size fillElementSizeConstraint;
-        if (FillElementsCount > 0)
-            fillElementSizeConstraint = CalculateSpaceAvailableForFillElements(bounds) / FillElementsCount;
-        else
-            fillElementSizeConstraint = new Size();
-
-        var contentConstrains = new Size
-        (
-            Width: bounds.Size.Width - Element.Margins.Left - Element.Margins.Right,
-            Height: bounds.Size.Height - Element.Margins.Top - Element.Margins.Bottom
-        );
-
         var contentBounds = new Rectangle
         (
-            Point: new Point
-            (
-                X: bounds.Point.X + Element.Margins.Left,
-                Y: bounds.Point.Y + Element.Margins.Top
-            ),
-            Size: contentConstrains
+            Point: stackContainer.GetInnerPoint(bounds.Point),
+            Size: stackContainer.GetInnerSize(bounds.Size)
         );
+
+        Size fillElementSizeConstraint = CalculateFillElementsSizeConstraint(contentBounds);
         
-        ILayout[] childLayouts = BuildChildLayouts(contentBounds, fillElementSizeConstraint).ToArray();
+        ILayout[] childLayouts = BuildChildLayouts(childLayoutBuilders, contentBounds, fillElementSizeConstraint).ToArray();
+
+        Size childrenSize = childLayouts.Select(cl => cl.OuterBounds.Size)
+            .GetCombinedSize(stackContainer.Direction);
+
+        if (stackContainer.Direction == Direction.Horizontal)
+        {
+            childrenSize = childrenSize with
+            {
+                Width = childrenSize.Width + GapsSum
+            };
+        }
+        else
+        {
+            childrenSize = childrenSize with
+            {
+                Height = childrenSize.Height + GapsSum
+            };
+        }
+
+        bounds = bounds with
+        {
+            Size = new Size
+            (
+                Width: Math.Max(bounds.Size.Width, childrenSize.Width),
+                Height: Math.Max(bounds.Size.Height, childrenSize.Height)
+            )
+        };
         
         return new ContainerLayout(bounds.Point, bounds.Size, stackContainer.Margins, borderPen, childLayouts.ToArray());
     }
 
-    private Size CalculateSpaceAvailableForFillElements(Rectangle bounds)
+    private Size GetSizeOfLayouts(IReadOnlyList<ILayout> layouts)
     {
-        return bounds.Size - SizeOfContentSizedElements;
+        if (layouts.Count == 0)
+            return new Size();
+
+        return layouts
+            .Select(layout => layout.OuterBounds.Size)
+            .GetCombinedSize(stackContainer.Direction);
+    }
+
+    private Size CalculateFillElementsSizeConstraint(Rectangle contentBounds)
+    {
+        if (FillElementsCount <= 0)
+            return new Size();
+
+        // TODO: Refactor to not build layouts twice. Maybe add a way to update bounds of layout after being built?
+        IReadOnlyList<ILayout> contentSizedElementLayouts = BuildChildLayouts(_contentSizedElements, contentBounds, new Size()).ToArray();
+
+        Size sizeOfContentSizedElements = GetSizeOfLayouts(contentSizedElementLayouts);
+
+        Size contentSizeConstraint = contentBounds.Size;
+
+        if (stackContainer.Direction == Direction.Horizontal)
+        {
+            return contentSizeConstraint with
+            {
+                Width = (contentSizeConstraint.Width - (sizeOfContentSizedElements.Width + GapsSum)) / FillElementsCount
+            };
+        }
+
+        return contentSizeConstraint with
+        {
+            Height = (contentSizeConstraint.Height - (sizeOfContentSizedElements.Height + GapsSum)) / FillElementsCount
+        };
     }
 
     private int FillElementsCount => childLayoutBuilders.Length - _contentSizedElements.Count;
 
-    private IEnumerable<ILayout> BuildChildLayouts(Rectangle contentBounds, Size fillElementsSizeConstraint)
+    private IEnumerable<ILayout> BuildChildLayouts(IEnumerable<ILayoutBuilder> layoutBuilders, Rectangle contentBounds, Size fillElementsSizeConstraint)
     {
         bool first = true;
-        foreach (ILayoutBuilder childLayoutBuilder in childLayoutBuilders)
+        foreach (ILayoutBuilder childLayoutBuilder in layoutBuilders)
         {
-            Point startOfNextChild = contentBounds.Point;
-            
             if (!first)
             {
                 if (stackContainer.Direction == Direction.Horizontal)
-                    startOfNextChild = startOfNextChild with { X = startOfNextChild.X + stackContainer.Gap };
+                {
+                    contentBounds = new Rectangle
+                    (
+                        Point: contentBounds.Point with
+                        {
+                            X = contentBounds.Point.X + stackContainer.Gap
+                        },
+                        Size: contentBounds.Size with
+                        {
+                            Width = contentBounds.Size.Width - stackContainer.Gap
+                        }
+                    );
+                }
                 else
-                    startOfNextChild = startOfNextChild with { Y = startOfNextChild.Y + stackContainer.Gap };
+                {
+                    contentBounds = new Rectangle
+                    (
+                        Point: contentBounds.Point with
+                        {
+                            Y = contentBounds.Point.Y + stackContainer.Gap
+                        },
+                        Size: contentBounds.Size with
+                        {
+                            Height = contentBounds.Size.Height - stackContainer.Gap
+                        }
+                    );
+                }
             }
             else
             {
                 first = false;
             }
+            
+            Point startOfNextChild = contentBounds.Point;
 
             Size childOuterSize = childLayoutBuilder.OuterSize;
-            
+
             if (stackContainer.Direction == Direction.Vertical)
             {
                 switch (stackContainer.ElementAlignment)
@@ -113,7 +177,7 @@ internal class StackLayoutBuilder(
                             $"ElementAlignment not implemented: {stackContainer.ElementAlignment}");
                 }
             }
-            else
+            else // Horizontal
             {
                 switch (stackContainer.ElementAlignment)
                 {
@@ -142,23 +206,30 @@ internal class StackLayoutBuilder(
                             $"ElementAlignment not implemented: {stackContainer.ElementAlignment}");
                 }
             }
-            
+
             if (childLayoutBuilder.Element.Sizing == ElementSizing.ExpandToFillBounds)
             {
                 if (stackContainer.Direction == Direction.Horizontal)
                 {
                     childOuterSize = childOuterSize with
                     {
-                        Width = fillElementsSizeConstraint.Width,
+                        Width = Math.Min(fillElementsSizeConstraint.Width, contentBounds.Size.Width)
                     };
                 }
                 else
                 {
                     childOuterSize = childOuterSize with
                     {
-                        Height = fillElementsSizeConstraint.Height,
+                        Height = Math.Min(fillElementsSizeConstraint.Height, contentBounds.Size.Height)
                     };
                 }
+            }
+            else
+            {
+                childOuterSize = childOuterSize with
+                {
+                    Width = Math.Min(childOuterSize.Width, contentBounds.Size.Width)
+                };
             }
 
             var childBounds = new Rectangle(startOfNextChild, childOuterSize);
@@ -166,21 +237,33 @@ internal class StackLayoutBuilder(
             yield return childLayout;
 
             if (stackContainer.Direction == Direction.Horizontal)
-                contentBounds = contentBounds with
-                {
-                    Point = contentBounds.Point with
+            {
+                contentBounds = new Rectangle
+                (
+                    Point: contentBounds.Point with
                     {
                         X = childLayout.OuterBounds.Right
-                    },
-                };
+                    }, 
+                    Size: contentBounds.Size with
+                    {
+                        Width = contentBounds.Size.Width - childLayout.OuterBounds.Size.Width
+                    }
+                );
+            }
             else
-                contentBounds = contentBounds with
-                {
-                    Point = contentBounds.Point with
+            {
+                contentBounds = new Rectangle
+                (
+                    Point: contentBounds.Point with
                     {
                         Y = childLayout.OuterBounds.Bottom
+                    },
+                    Size: contentBounds.Size with
+                    {
+                        Height = contentBounds.Size.Height - childLayout.OuterBounds.Size.Height
                     }
-                };
+                );
+            }
         }
     }
 }

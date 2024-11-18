@@ -18,4 +18,5 @@ public readonly struct Color
     public static readonly Color Black = XColors.Black;
     public static readonly Color Red = XColors.Red;
     public static readonly Color Blue = XColors.Blue;
+    public static readonly Color LightGrey = XColors.LightGray;
 }

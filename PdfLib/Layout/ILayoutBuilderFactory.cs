@@ -5,5 +5,5 @@ namespace PdfLib.Layout;
 
 internal interface ILayoutBuilderFactory
 {
-    ILayoutBuilder GetLayoutBuilder(IElement element, Font font, StringFormat stringFormat);
+    ILayoutBuilder GetLayoutBuilder(IElement element, Font font, Color fontColor, StringFormat stringFormat);
 }
