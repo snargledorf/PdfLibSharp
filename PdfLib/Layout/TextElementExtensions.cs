@@ -27,6 +27,8 @@ internal static class TextElementExtensions
                 .GetCombinedSize(Direction.Vertical);
         }
 
+        contentSize = textElement.GetSize(contentSize);
+
         return new TextLayoutBuilder(textElement, lines, contentSize, font, fontColor, stringFormat);
     }
 

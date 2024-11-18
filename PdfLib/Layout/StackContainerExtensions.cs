@@ -23,6 +23,8 @@ internal static class StackContainerExtensions
             .Select(childLayoutBuilder => childLayoutBuilder.OuterSize)
             .GetCombinedSize(stackContainer.Direction);
 
+        contentSize = stackContainer.GetSize(contentSize);
+
         return new StackLayoutBuilder(stackContainer, contentSize, childLayoutBuilders);
     }
 }
