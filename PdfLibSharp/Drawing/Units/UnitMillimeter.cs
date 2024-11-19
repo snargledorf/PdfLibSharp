@@ -2,13 +2,7 @@ namespace PdfLibSharp.Drawing.Units;
 
 public class UnitMillimeter : Unit
 {
-    public override double ToPoints(double value)
-    {
-        return value * PointsPerMillimeter;
-    }
+    public const double PointsPerMillimeter = 2.8346456693;
 
-    public override double FromPoints(double points)
-    {
-        return points / PointsPerMillimeter;
-    }
+    public override double PointsPerUnit => PointsPerMillimeter;
 }
