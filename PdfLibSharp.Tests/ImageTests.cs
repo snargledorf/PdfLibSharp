@@ -13,7 +13,7 @@ public class ImageTests
         Image image = Image.FromStream(ms);
         Assert.That(image, Is.Not.Null);
         
-        (double width, double height) = image.Size;
+        (Dimension width, Dimension height) = image.Size;
         Dimension expectedWidthHeight = Dimension.FromPixels(512);
 
         Assert.Multiple(() =>
