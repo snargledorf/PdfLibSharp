@@ -49,4 +49,11 @@ public class LayoutBuilderFactoryTests
         Assert.That(layoutBuilder, Is.InstanceOf<ImageLayoutBuilder>());
         Assert.That(layoutBuilder.Element, Is.EqualTo(imageElement)); 
     }
+
+    [Test]
+    public void LayoutBuilderFactory_Dispose()
+    {
+        var layoutBuilderFactory = new LayoutBuilderFactory(_measureGraphics);
+        layoutBuilderFactory.Dispose();
+    }
 }

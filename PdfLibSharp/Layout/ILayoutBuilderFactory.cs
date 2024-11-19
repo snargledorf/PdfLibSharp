@@ -3,7 +3,7 @@ using PdfLibSharp.Drawing;
 
 namespace PdfLibSharp.Layout;
 
-internal interface ILayoutBuilderFactory
+internal interface ILayoutBuilderFactory : IDisposable
 {
     ILayoutBuilder GetLayoutBuilder(IElement element, LayoutScope scope);
 }
