@@ -1,6 +1,6 @@
 namespace PdfLibSharp.Drawing.Units;
 
-internal sealed class UnitInch : Unit
+public sealed class UnitInch : Unit
 {
     public override double ToPoints(double value)
     {
