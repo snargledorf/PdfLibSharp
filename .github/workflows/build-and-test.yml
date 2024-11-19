@@ -21,9 +21,17 @@ jobs:
     steps:
     - name: Install Microsoft Fonts
       run: |
-        sudo apt-get update
         echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-        sudo apt-get install ttf-mscorefonts-installer
+        sudo apt install ttf-mscorefonts-installer
+        
+        # Fix https redirect issue https://bugs.launchpad.net/ubuntu/+source/msttcorefonts/+bug/1719863
+        TMP=$(mktemp -d)
+        cd "$TMP"
+        awk '/Url/ {system("wget "$2)}' /usr/share/package-data-downloads/ttf-mscorefonts-installer
+        sudo /usr/lib/msttcorefonts/update-ms-fonts "$TMP"/*
+        sudo touch /var/lib/update-notifier/package-data-downloads/ttf-mscorefonts-installer
+        cd ..
+        rm -r "$TMP"
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
