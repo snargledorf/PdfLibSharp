@@ -14,6 +14,8 @@ internal class StackLayoutBuilder(
         .Where(childLayoutBuilder => childLayoutBuilder.Element.Sizing == ElementSizing.Content)
         .ToArray();
 
+    private int FillElementsCount => childLayoutBuilders.Length - _contentSizedElements.Count;
+
     private Dimension GapsSum
     {
         get
@@ -28,7 +30,7 @@ internal class StackLayoutBuilder(
         var contentBounds = new Rectangle
         (
             Point: stackContainer.GetInnerPoint(bounds.Point),
-            Size: stackContainer.GetInnerSize(bounds.Size)
+            Size: bounds.Size - stackContainer.Margins
         );
 
         Size fillElementSizeConstraint = CalculateFillElementsSizeConstraint(contentBounds);
@@ -65,16 +67,6 @@ internal class StackLayoutBuilder(
         return new ContainerLayout(bounds.Point, bounds.Size, stackContainer.Margins, borderPen, childLayouts.ToArray());
     }
 
-    private Size GetSizeOfLayouts(IReadOnlyList<ILayout> layouts)
-    {
-        if (layouts.Count == 0)
-            return new Size();
-
-        return layouts
-            .Select(layout => layout.OuterBounds.Size)
-            .GetCombinedSize(stackContainer.Direction);
-    }
-
     private Size CalculateFillElementsSizeConstraint(Rectangle contentBounds)
     {
         if (FillElementsCount <= 0)
@@ -101,7 +93,15 @@ internal class StackLayoutBuilder(
         };
     }
 
-    private int FillElementsCount => childLayoutBuilders.Length - _contentSizedElements.Count;
+    private Size GetSizeOfLayouts(IReadOnlyList<ILayout> layouts)
+    {
+        if (layouts.Count == 0)
+            return new Size();
+
+        return layouts
+            .Select(layout => layout.OuterBounds.Size)
+            .GetCombinedSize(stackContainer.Direction);
+    }
 
     private IEnumerable<ILayout> BuildChildLayouts(IEnumerable<ILayoutBuilder> layoutBuilders, Rectangle contentBounds, Size fillElementsSizeConstraint)
     {

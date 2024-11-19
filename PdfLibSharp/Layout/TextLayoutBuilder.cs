@@ -88,7 +88,7 @@ internal class TextLayoutBuilder(ITextElement textElement, IReadOnlyCollection<I
 
         if (Element.Sizing == ElementSizing.ExpandToFillBounds)
         {
-            Size innerBounds = Element.GetInnerSize(bounds.Size);
+            Size innerBounds = bounds.Size - Element.Margins;
             layoutSize = new Size
             (
                 Width: Math.Max(layoutSize.Width, innerBounds.Width),
