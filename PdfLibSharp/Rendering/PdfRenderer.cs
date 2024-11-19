@@ -24,9 +24,12 @@ public static class PdfRenderer
                 
                 using IMeasureGraphics measureGraphics = Graphics.ForMeasure(pageSize);
                 
-                var layoutGenerator = new LayoutGenerator(measureGraphics);
+                var layoutBuilderFactory = new LayoutBuilderFactory(measureGraphics);
                 var layoutScope = new LayoutScope(pdf.DefaultFont, pdf.DefaultLineHeight, pdf.DefaultStringFormat, pdf.DefaultFontColor);
-                ILayout pageLayout = layoutGenerator.GenerateLayout(page, new Rectangle(Point.Zero, pageSize), layoutScope);
+                
+                ILayoutBuilder pageLayoutBuilder = page.GetLayoutBuilder(layoutScope, layoutBuilderFactory);
+
+                ILayout pageLayout = pageLayoutBuilder.BuildLayout(new Rectangle(Point.Zero, pageSize));
 
                 using IGraphics graphics = Graphics.FromPdfPage(pdfPage);
 
