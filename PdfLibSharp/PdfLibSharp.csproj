@@ -24,4 +24,8 @@
       <PackageReference Include="PDFsharp" Version="6.1.1" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="PdfLibSharp.Tests" />
+    </ItemGroup>
+
 </Project>
