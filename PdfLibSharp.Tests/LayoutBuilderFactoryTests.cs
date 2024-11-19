@@ -5,7 +5,7 @@ using PdfLibSharp.Layout;
 
 namespace PdfLibSharp.Tests;
 
-public class LayoutBuilderTests
+public class LayoutBuilderFactoryTests
 {
     private IMeasureGraphics _measureGraphics;
     private LayoutScope _layoutScope;
