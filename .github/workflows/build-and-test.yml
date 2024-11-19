@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install Microsoft Fonts
+      run: sudo apt install ttf-mscorefonts-installer
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
