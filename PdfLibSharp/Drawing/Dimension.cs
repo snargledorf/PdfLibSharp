@@ -1,3 +1,5 @@
+using PdfLibSharp.Drawing.Units;
+
 namespace PdfLibSharp.Drawing;
 
 public readonly record struct Dimension(double Value, Unit? Unit) : IComparable<Dimension>
@@ -21,6 +23,8 @@ public readonly record struct Dimension(double Value, Unit? Unit) : IComparable<
     public static Dimension FromInches(double inches) => new(inches, Unit.Inch);
 
     public static Dimension FromMillimeters(double millimeters) => new(millimeters, Unit.Millimeter);
+    
+    public static Dimension FromPixels(int pixels, int ppi = UnitPixel.DefaultPixelsPerInch) => new(pixels, UnitPixel.ForPpi(ppi));
 
     public void Deconstruct(out double Value, out Unit Unit)
     {
