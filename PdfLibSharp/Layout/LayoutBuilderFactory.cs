@@ -18,4 +18,9 @@ internal class LayoutBuilderFactory(IMeasureGraphics measureGraphics) : ILayoutB
             _ => throw new ArgumentOutOfRangeException(nameof(element), element, "Unsupported element type")
         };
     }
+
+    public void Dispose()
+    {
+        measureGraphics.Dispose();
+    }
 }

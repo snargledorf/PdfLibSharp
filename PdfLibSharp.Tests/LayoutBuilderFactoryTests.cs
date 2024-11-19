@@ -5,7 +5,7 @@ using PdfLibSharp.Layout;
 
 namespace PdfLibSharp.Tests;
 
-public class LayoutBuilderTests
+public class LayoutBuilderFactoryTests
 {
     private IMeasureGraphics _measureGraphics;
     private LayoutScope _layoutScope;
@@ -48,5 +48,12 @@ public class LayoutBuilderTests
         
         Assert.That(layoutBuilder, Is.InstanceOf<ImageLayoutBuilder>());
         Assert.That(layoutBuilder.Element, Is.EqualTo(imageElement)); 
+    }
+
+    [Test]
+    public void LayoutBuilderFactory_Dispose()
+    {
+        var layoutBuilderFactory = new LayoutBuilderFactory(_measureGraphics);
+        layoutBuilderFactory.Dispose();
     }
 }
