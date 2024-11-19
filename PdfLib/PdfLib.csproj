@@ -1,18 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
+        <TargetFrameworks>net7.0;net8.0;net9.0</TargetFrameworks>
+        <Version>1.0.0-alpha1</Version>
+        <Title>PdfLib</Title>
+        <Authors>Ryan Esteves</Authors>
+        <Description>A wrapper around PdfSharp that supports auto sizing stacks of elements</Description>
+        <PackageProjectUrl>https://github.com/snargledorf/PdfLib</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/snargledorf/PdfLib.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README-nuget.md</PackageReadmeFile>
     </PropertyGroup>
-
+    
     <ItemGroup>
-      <PackageReference Include="PDFsharp" Version="6.1.1" />
+        <None Include="README-nuget.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Fonts\Lato-Regular.ttf" />
+      <PackageReference Include="PDFsharp" Version="6.1.1" />
     </ItemGroup>
 
 </Project>
