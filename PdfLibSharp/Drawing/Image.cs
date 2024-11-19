@@ -15,8 +15,15 @@ public sealed class Image
 
     public static Image FromFile(string filePath)
     {
-        return new Image(XImage.FromFile(filePath));
+        return XImage.FromFile(filePath);
+    }
+
+    public static Image FromStream(Stream stream)
+    {
+        return XImage.FromStream(stream);
     }
 
     public static implicit operator XImage(Image image) => image._image;
+    
+    public static implicit operator Image(XImage image) => new(image);
 }
