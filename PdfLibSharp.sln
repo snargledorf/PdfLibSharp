@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfLibSharp", "PdfLibSharp\PdfLibSharp.csproj", "{D344C34C-8E96-4271-B873-9C86FDC396FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfLibSharp.Tests", "PdfLibSharp.Tests\PdfLibSharp.Tests.csproj", "{DAD0EB9B-61D8-4DB2-BD2E-1244A0E0F4B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{D344C34C-8E96-4271-B873-9C86FDC396FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D344C34C-8E96-4271-B873-9C86FDC396FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D344C34C-8E96-4271-B873-9C86FDC396FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAD0EB9B-61D8-4DB2-BD2E-1244A0E0F4B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAD0EB9B-61D8-4DB2-BD2E-1244A0E0F4B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAD0EB9B-61D8-4DB2-BD2E-1244A0E0F4B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAD0EB9B-61D8-4DB2-BD2E-1244A0E0F4B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
