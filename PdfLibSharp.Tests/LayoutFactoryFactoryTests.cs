@@ -5,7 +5,7 @@ using PdfLibSharp.Layout;
 
 namespace PdfLibSharp.Tests;
 
-public class LayoutBuilderFactoryTests
+public class LayoutFactoryFactoryTests
 {
     private IMeasureGraphics _measureGraphics;
     private LayoutScope _layoutScope;
@@ -28,11 +28,11 @@ public class LayoutBuilderFactoryTests
     {
         var textElement = new TextElement("Hello World");
         
-        var layoutBuilderFactory = new LayoutBuilderFactory(_measureGraphics);
-        ILayoutBuilder layoutBuilder = layoutBuilderFactory.GetLayoutBuilder(textElement, _layoutScope);
+        var layoutBuilderFactory = new LayoutFactoryFactory(_measureGraphics);
+        ILayoutFactory layoutFactory = layoutBuilderFactory.CreateLayoutFactory(textElement, _layoutScope);
         
-        Assert.That(layoutBuilder, Is.InstanceOf<TextLayoutBuilder>());
-        Assert.That(layoutBuilder.Element, Is.EqualTo(textElement)); 
+        Assert.That(layoutFactory, Is.InstanceOf<TextLayoutFactory>());
+        Assert.That(layoutFactory.Element, Is.EqualTo(textElement)); 
     }
 
     [Test]
@@ -43,17 +43,17 @@ public class LayoutBuilderFactoryTests
         
         var imageElement = new ImageElement(Image.FromStream(ms));
         
-        var layoutBuilderFactory = new LayoutBuilderFactory(_measureGraphics);
-        ILayoutBuilder layoutBuilder = layoutBuilderFactory.GetLayoutBuilder(imageElement, _layoutScope);
+        var layoutBuilderFactory = new LayoutFactoryFactory(_measureGraphics);
+        ILayoutFactory layoutFactory = layoutBuilderFactory.CreateLayoutFactory(imageElement, _layoutScope);
         
-        Assert.That(layoutBuilder, Is.InstanceOf<ImageLayoutBuilder>());
-        Assert.That(layoutBuilder.Element, Is.EqualTo(imageElement)); 
+        Assert.That(layoutFactory, Is.InstanceOf<ImageLayoutFactory>());
+        Assert.That(layoutFactory.Element, Is.EqualTo(imageElement)); 
     }
 
     [Test]
     public void LayoutBuilderFactory_Dispose()
     {
-        var layoutBuilderFactory = new LayoutBuilderFactory(_measureGraphics);
+        var layoutBuilderFactory = new LayoutFactoryFactory(_measureGraphics);
         layoutBuilderFactory.Dispose();
     }
 }

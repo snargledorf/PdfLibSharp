@@ -5,5 +5,5 @@ namespace PdfLibSharp.Layout;
 
 internal interface ILayoutBuilderFactory : IDisposable
 {
-    ILayoutBuilder GetLayoutBuilder(IElement element, LayoutScope scope);
+    ILayoutFactory CreateLayoutFactory(IElement element, LayoutScope scope);
 }

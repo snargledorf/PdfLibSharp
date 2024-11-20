@@ -24,17 +24,19 @@ public static class PdfRenderer
                 
                 using IMeasureGraphics measureGraphics = Graphics.ForMeasure(pageSize);
                 
-                var layoutBuilderFactory = new LayoutBuilderFactory(measureGraphics);
+                var layoutBuilderFactory = new LayoutFactoryFactory(measureGraphics);
                 var layoutScope = new LayoutScope(pdf.DefaultFont, pdf.DefaultLineHeight, pdf.DefaultStringFormat, pdf.DefaultFontColor);
                 
-                ILayoutBuilder pageLayoutBuilder = page.GetLayoutBuilder(layoutScope, layoutBuilderFactory);
+                ILayoutFactory pageLayoutFactory = page.CreateLayoutFactory(layoutScope, layoutBuilderFactory);
 
-                ILayout pageLayout = pageLayoutBuilder.BuildLayout(new Rectangle(Point.Zero, pageSize));
+                ILayout pageLayout = pageLayoutFactory.CreateLayout(pageSize);
+                var pageBounds = new Rectangle(Point.Zero, pageLayout.ContentSize);
+                var positionedPageLayout = pageLayout.ToPositionedLayout(pageBounds);
 
                 using IGraphics graphics = Graphics.FromPdfPage(pdfPage);
 
                 var renderer = new Renderer(graphics);
-                renderer.Render(pageLayout);
+                renderer.Render(positionedPageLayout);
             }
 
             pdfDocument.Save(stream);

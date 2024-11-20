@@ -5,6 +5,8 @@ namespace PdfLibSharp.Layout;
 
 internal interface ILayout
 {
-    Rectangle OuterBounds { get; }
-    Rectangle ContentBounds { get; }
+    Margins Margins { get; }
+    Size ContentSize { get; }
+
+    PositionedLayout ToPositionedLayout(Rectangle contentBounds);
 }
