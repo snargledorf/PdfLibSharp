@@ -5,7 +5,7 @@ namespace PdfLibSharp.Layout;
 
 internal class TextLayout(
     ITextElement textElement,
-    IReadOnlyCollection<TextLineLayout> lines,
+    IReadOnlyCollection<TextLine> lines,
     Size contentSize,
     Font font,
     StringFormat format,
@@ -13,28 +13,34 @@ internal class TextLayout(
     Pen? borderPen)
     : BorderElementLayout(textElement, contentSize, borderPen), ITextLayout
 {
-    public IReadOnlyCollection<TextLineLayout> Lines { get; } = lines;
+    public IReadOnlyCollection<TextLine> Lines { get; } = lines;
     public StringFormat Format { get; } = format;
     public Brush Brush { get; } = brush;
     public Font Font { get; } = font;
 
-    public override PositionedLayout ToPositionedLayout(Rectangle contentBounds)
+    protected override object BuildContent(Rectangle contentBounds)
     {
-        var positionedLines = new List<TextLinePositionedLayout>();
+        var positionedLines = new List<PositionedTextLine>();
         
         Point linePoint = contentBounds.Point;
-        foreach (TextLineLayout line in Lines)
+
+        PositionedTextLine? previousLineLayout = null;
+        foreach (TextLine line in Lines)
         {
-            var lineBounds = new Rectangle(linePoint, line.ContentSize);
-            var positionedLayout = new TextLinePositionedLayout(line.Text, lineBounds);
-            positionedLines.Add(positionedLayout);
-            
-            linePoint = linePoint with
+            if (previousLineLayout is not null)
             {
-                Y = linePoint.Y + line.ContentSize.Height
-            };
+                linePoint = linePoint with
+                {
+                    Y = previousLineLayout.ContentBounds.Bottom
+                };
+            }
+            
+            var lineBounds = new Rectangle(linePoint, line.ContentSize);
+            
+            previousLineLayout = new PositionedTextLine(line.Text, lineBounds);
+            positionedLines.Add(previousLineLayout);
         }
         
-        return new TextPositionedLayout(positionedLines.ToArray(), Font, Format, Brush, BorderPen, contentBounds);
+        return new TextContent(positionedLines.ToArray(), Font, Format, Brush, BorderPen);
     }
 }

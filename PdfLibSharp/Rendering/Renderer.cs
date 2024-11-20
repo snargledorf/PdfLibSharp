@@ -9,32 +9,32 @@ internal class Renderer(IGraphics graphics) : IRenderer
     {
         RenderPrimaryLayout(layout);
 
-        if (layout is BorderPositionedLayout { BorderPen: { } borderPen })
+        if (layout.Content is BorderedContent { BorderPen: { } borderPen })
             RenderBorder(layout.ContentBounds, borderPen);
     }
 
     private void RenderPrimaryLayout(PositionedLayout layout)
     {
-        switch (layout)
+        switch (layout.Content)
         {
-            case TextPositionedLayout textLayout:
-                RenderText(textLayout);
+            case TextContent textContent:
+                RenderText(textContent);
                 break;
-            case ImagePositionedLayout imageLayout:
-                RenderImage(imageLayout);
+            case ImageContent imageContent:
+                RenderImage(imageContent, layout.ContentBounds);
                 break;
-            case ContainerPositionedLayout containerLayout:
-                RenderContainer(containerLayout);
+            case ContainerContent containerContent:
+                RenderContainer(containerContent);
                 break;
-            case LinePositionedLayout lineLayout:
-                RenderLine(lineLayout);
+            case LineContent lineContent:
+                RenderLine(lineContent, layout.ContentBounds);
                 break;
         }
     }
 
-    private void RenderLine(LinePositionedLayout lineLayout)
+    private void RenderLine(LineContent lineLayout, Rectangle contentBounds)
     {
-        graphics.DrawLine(lineLayout.Pen, lineLayout.Start, lineLayout.End);
+        graphics.DrawLine(lineLayout.Pen, contentBounds.TopLeft, contentBounds.BottomRight);
     }
 
     private void RenderBorder(Rectangle contentBounds, Pen borderPen)
@@ -42,13 +42,13 @@ internal class Renderer(IGraphics graphics) : IRenderer
         graphics.DrawRectangle(borderPen, contentBounds);
     }
 
-    private void RenderText(TextPositionedLayout iTextSizedLayout)
+    private void RenderText(TextContent textContent)
     {
-        foreach (TextLinePositionedLayout line in iTextSizedLayout.Lines)
+        foreach (PositionedTextLine line in textContent.Lines)
         {
             Rectangle bounds = line.ContentBounds;
         
-            if (iTextSizedLayout.Format == StringFormat.BaseLineLeft)
+            if (textContent.Format == StringFormat.BaseLineLeft)
             {
                 // BaseLineLeft strings need to have a height of 0
                 bounds = bounds with
@@ -60,16 +60,16 @@ internal class Renderer(IGraphics graphics) : IRenderer
                 };
             }
             
-            graphics.DrawString(line.Text, iTextSizedLayout.Font, iTextSizedLayout.Brush, bounds, iTextSizedLayout.Format);   
+            graphics.DrawString(line.Text, textContent.Font, textContent.Brush, bounds, textContent.Format);   
         }
     }
 
-    private void RenderImage(ImagePositionedLayout imageLayout)
+    private void RenderImage(ImageContent imageContent, Rectangle contentBounds)
     {
-        graphics.DrawImage(imageLayout.Image, imageLayout.ContentBounds);
+        graphics.DrawImage(imageContent.Image, contentBounds);
     }
 
-    private void RenderContainer(ContainerPositionedLayout containerLayout)
+    private void RenderContainer(ContainerContent containerLayout)
     {
         foreach (PositionedLayout childLayout in containerLayout.Children)
             Render(childLayout);

@@ -8,5 +8,5 @@ internal interface ILayout
     Margins Margins { get; }
     Size ContentSize { get; }
 
-    PositionedLayout ToPositionedLayout(Rectangle contentBounds);
+    PositionedLayout ToPositionedLayout(Rectangle outerBounds);
 }

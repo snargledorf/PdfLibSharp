@@ -8,6 +8,19 @@ internal abstract class ElementLayout(IElement element, Size contentSize) : ILay
     public Margins Margins { get; } = element.Margins;
     
     public Size ContentSize { get; } = contentSize;
-    
-    public abstract PositionedLayout ToPositionedLayout(Rectangle contentBounds);
+
+    public PositionedLayout ToPositionedLayout(Rectangle outerBounds)
+    {
+        var contentBounds = new Rectangle
+        (
+            Point: outerBounds.Point + new Point(Margins.Left, Margins.Top),
+            Size: ContentSize
+        );
+        
+        object content = BuildContent(contentBounds);
+        
+        return new PositionedLayout(contentBounds, outerBounds, content);
+    }
+
+    protected abstract object BuildContent(Rectangle contentBounds);
 }

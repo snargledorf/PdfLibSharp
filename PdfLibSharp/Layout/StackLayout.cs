@@ -10,10 +10,10 @@ internal class StackLayout(
     IReadOnlyList<ILayout> childLayouts)
     : ContainerLayout(stackContainer, contentSize, borderPen, childLayouts)
 {
-    public override PositionedLayout ToPositionedLayout(Rectangle contentBounds)
+    protected override object BuildContent(Rectangle contentBounds)
     {
         var childPositionedLayouts = new List<PositionedLayout>();
-
+        
         Rectangle childElementBounds = contentBounds;
 
         PositionedLayout? previousLayout = null;
@@ -27,12 +27,12 @@ internal class StackLayout(
                     (
                         Point: childElementBounds.Point with
                         {
-                            X = childElementBounds.Point.X + previousLayout.ContentBounds.Right + stackContainer.Gap
+                            X = previousLayout.OuterBounds.Right +  + stackContainer.Gap
                         },
                         Size: childElementBounds.Size with
                         {
                             Width = childElementBounds.Size.Width -
-                                    (previousLayout.ContentBounds.Size.Width + stackContainer.Gap)
+                                    (previousLayout.OuterBounds.Size.Width + stackContainer.Gap)
                         }
                     );
                 }
@@ -42,12 +42,12 @@ internal class StackLayout(
                     (
                         Point: childElementBounds.Point with
                         {
-                            Y = childElementBounds.Point.Y + previousLayout.ContentBounds.Bottom + stackContainer.Gap
+                            Y = previousLayout.OuterBounds.Bottom + stackContainer.Gap
                         },
                         Size: childElementBounds.Size with
                         {
                             Height = childElementBounds.Size.Height -
-                                     (previousLayout.ContentBounds.Size.Height + stackContainer.Gap)
+                                     (previousLayout.OuterBounds.Size.Height + stackContainer.Gap)
                         }
                     );
                 }
@@ -120,6 +120,6 @@ internal class StackLayout(
             childPositionedLayouts.Add(previousLayout);
         }
 
-        return new ContainerPositionedLayout(childPositionedLayouts.ToArray(), contentBounds, BorderPen);
+        return new ContainerContent(childPositionedLayouts.ToArray(), BorderPen);
     }
 }

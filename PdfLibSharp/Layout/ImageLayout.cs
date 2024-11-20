@@ -7,9 +7,9 @@ internal class ImageLayout(IImageElement imageElement, Size contentSize, Pen? bo
     : BorderElementLayout(imageElement, contentSize, borderPen), IImageLayout
 {
     public Image Image { get; } = imageElement.Image;
-    
-    public override PositionedLayout ToPositionedLayout(Rectangle contentBounds)
+
+    protected override object BuildContent(Rectangle contentBounds)
     {
-        return new ImagePositionedLayout(Image, contentBounds, BorderPen);
+        return new ImageContent(Image, BorderPen);
     }
 }

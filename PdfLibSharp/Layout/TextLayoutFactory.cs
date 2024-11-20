@@ -17,7 +17,7 @@ internal class TextLayoutFactory(ITextElement textElement, LayoutScope layoutSco
 
         IReadOnlyCollection<IReadOnlyCollection<Word>> lines = TextLayoutBuilderHelpers.GetLines(textElement.Text, font, lineHeight, measureGraphics);
         
-        var lineLayouts = new List<TextLineLayout>();
+        var lineLayouts = new List<TextLine>();
         var lineBuilder = new StringBuilder();
 
         var lineSize = new Size();
@@ -28,13 +28,12 @@ internal class TextLayoutFactory(ITextElement textElement, LayoutScope layoutSco
             {
                 if (lineSize.Width + word.Size.Width > constraints.Width)
                 {
-                    // REVIEW: Do we need to set the line length to the constraints' width?
-                    lineSize = constraints with
+                    lineSize = lineSize with
                     {
                         Height = Math.Max(lineSize.Height, word.Size.Height)
                     };
                     
-                    lineLayouts.Add(new TextLineLayout(lineBuilder.ToString(), lineSize));
+                    lineLayouts.Add(new TextLine(lineBuilder.ToString(), lineSize));
                     
                     lineSize = new Size();
                     lineBuilder.Clear();
@@ -48,14 +47,8 @@ internal class TextLayoutFactory(ITextElement textElement, LayoutScope layoutSco
                 
                 lineBuilder.Append(word.Text);
             }
-
-            // REVIEW: Do we need to set the line length to the constraints' width?
-            lineSize = lineSize with
-            {
-                Width = constraints.Width
-            };
             
-            lineLayouts.Add(new TextLineLayout(lineBuilder.ToString(), lineSize));
+            lineLayouts.Add(new TextLine(lineBuilder.ToString(), lineSize));
                     
             lineSize = new Size();
             lineBuilder.Clear();

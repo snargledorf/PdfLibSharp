@@ -2,4 +2,4 @@ using PdfLibSharp.Drawing;
 
 namespace PdfLibSharp.Layout;
 
-internal record BorderedContent(Pen? BorderPen);
+internal record LineContent(Pen Pen);

@@ -2,4 +2,5 @@ using PdfLibSharp.Drawing;
 
 namespace PdfLibSharp.Layout;
 
-internal record TextPositionedLayout(IReadOnlyCollection<TextLinePositionedLayout> Lines, Font Font, StringFormat Format, Brush Brush, Pen? BorderPen, Rectangle ContentBounds) : PositionedLayout(ContentBounds);
+internal record TextContent(IReadOnlyCollection<PositionedTextLine> Lines, Font Font, StringFormat Format, Brush Brush, Pen? BorderPen) 
+    : BorderedContent(BorderPen);

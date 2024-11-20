@@ -2,4 +2,4 @@ using PdfLibSharp.Drawing;
 
 namespace PdfLibSharp.Layout;
 
-internal abstract record PositionedLayout(Rectangle ContentBounds);
+internal sealed record PositionedLayout(Rectangle ContentBounds, Rectangle OuterBounds, object Content);
