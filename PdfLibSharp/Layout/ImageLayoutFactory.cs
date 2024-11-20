@@ -8,6 +8,6 @@ internal class ImageLayoutFactory(IImageElement imageElement) : BorderLayoutFact
     protected override ILayout CreateInnerLayout(Size constraints)
     {
         // TODO: Resize image to fit constraints
-        return new ImageLayout(imageElement, constraints, BorderPen);
+        return new ImageLayout(imageElement, imageElement.GetSize(imageElement.Image.Size), BorderPen);
     }
 }

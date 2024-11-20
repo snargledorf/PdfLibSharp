@@ -10,6 +10,7 @@ internal class ImageLayout(IImageElement imageElement, Size contentSize, Pen? bo
 
     protected override object BuildContent(Rectangle contentBounds)
     {
+        // TODO: Resize image based on content bounds?
         return new ImageContent(Image, BorderPen);
     }
 }

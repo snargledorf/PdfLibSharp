@@ -63,7 +63,7 @@ internal class TextLayoutFactory(ITextElement textElement, LayoutScope layoutSco
         return new TextLayout(
             textElement,
             lineLayouts.ToArray(),
-            contentSize,
+            textElement.GetSize(contentSize),
             font,
             stringFormat,
             new SolidBrush(fontColor),

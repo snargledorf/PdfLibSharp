@@ -1,4 +1,5 @@
 using PdfLibSharp.Drawing;
+using PdfLibSharp.Elements;
 using PdfLibSharp.Elements.Layout;
 
 namespace PdfLibSharp.Layout;
@@ -12,9 +13,11 @@ internal class StackLayout(
 {
     protected override object BuildContent(Rectangle contentBounds)
     {
+        Size fillElementsSizeConstraint = CalculateFillElementsSizeConstraint(contentBounds.Size);
+        
         var childPositionedLayouts = new List<PositionedLayout>();
         
-        Rectangle childElementBounds = contentBounds;
+        Rectangle currentContentBounds = contentBounds;
 
         PositionedLayout? previousLayout = null;
         foreach (ILayout childLayout in ChildLayouts)
@@ -23,61 +26,61 @@ internal class StackLayout(
             {
                 if (stackContainer.Direction == Direction.Horizontal)
                 {
-                    childElementBounds = new Rectangle
+                    currentContentBounds = new Rectangle
                     (
-                        Point: childElementBounds.Point with
+                        Point: currentContentBounds.Point with
                         {
-                            X = previousLayout.OuterBounds.Right +  + stackContainer.Gap
+                            X = previousLayout.OuterBounds.Right + stackContainer.Gap
                         },
-                        Size: childElementBounds.Size with
+                        Size: currentContentBounds.Size with
                         {
-                            Width = childElementBounds.Size.Width -
+                            Width = currentContentBounds.Size.Width -
                                     (previousLayout.OuterBounds.Size.Width + stackContainer.Gap)
                         }
                     );
                 }
                 else
                 {
-                    childElementBounds = new Rectangle
+                    currentContentBounds = new Rectangle
                     (
-                        Point: childElementBounds.Point with
+                        Point: currentContentBounds.Point with
                         {
                             Y = previousLayout.OuterBounds.Bottom + stackContainer.Gap
                         },
-                        Size: childElementBounds.Size with
+                        Size: currentContentBounds.Size with
                         {
-                            Height = childElementBounds.Size.Height -
+                            Height = currentContentBounds.Size.Height -
                                      (previousLayout.OuterBounds.Size.Height + stackContainer.Gap)
                         }
                     );
                 }
             }
             
-            Point elementPoint = childElementBounds.Point;
-            Size elementConstraint = childElementBounds.Size;
+            Point childPoint = currentContentBounds.Point;
+            Size childOuterConstraint = childLayout.ContentSize + childLayout.Margins.ToSize();
             
             if (stackContainer.Direction == Direction.Vertical)
             {
                 switch (stackContainer.ElementAlignment)
                 {
                     case ElementAlignment.Center:
-                        elementPoint = elementPoint with
+                        childPoint = childPoint with
                         {
-                            X = elementPoint.X + ((contentBounds.Size.Width - elementConstraint.Width) / 2)
+                            X = childPoint.X + ((currentContentBounds.Size.Width - childOuterConstraint.Width) / 2)
                         };
                         break;
                     case ElementAlignment.Stretch:
-                        elementConstraint = elementConstraint with
+                        childOuterConstraint = childOuterConstraint with
                         {
-                            Width = contentBounds.Size.Width,
+                            Width = currentContentBounds.Size.Width,
                         };
                         break;
                     case ElementAlignment.Left:
                         break;
                     case ElementAlignment.Right:
-                        elementPoint = elementPoint with
+                        childPoint = childPoint with
                         {
-                            X = elementPoint.X + (contentBounds.Size.Width - elementConstraint.Width)
+                            X = childPoint.X + (currentContentBounds.Size.Width - childOuterConstraint.Width)
                         };
                         break;
                     default:
@@ -90,23 +93,23 @@ internal class StackLayout(
                 switch (stackContainer.ElementAlignment)
                 {
                     case ElementAlignment.Center:
-                        elementPoint = elementPoint with
+                        childPoint = childPoint with
                         {
-                            Y = elementPoint.Y + ((contentBounds.Size.Height - elementConstraint.Height) / 2)
+                            Y = childPoint.Y + ((currentContentBounds.Size.Height - childOuterConstraint.Height) / 2)
                         };
                         break;
                     case ElementAlignment.Stretch:
-                        elementConstraint = elementConstraint with
+                        childOuterConstraint = childOuterConstraint with
                         {
-                            Height = contentBounds.Size.Height,
+                            Height = currentContentBounds.Size.Height,
                         };
                         break;
                     case ElementAlignment.Left:
                         break;
                     case ElementAlignment.Right:
-                        elementPoint = elementPoint with
+                        childPoint = childPoint with
                         {
-                            Y = elementPoint.Y + (contentBounds.Size.Height - elementConstraint.Height)
+                            Y = childPoint.Y + (currentContentBounds.Size.Height - childOuterConstraint.Height)
                         };
                         break;
                     default:
@@ -115,11 +118,58 @@ internal class StackLayout(
                 }
             }
 
-            var elementBounds = new Rectangle(elementPoint, elementConstraint);
-            previousLayout = childLayout.ToPositionedLayout(elementBounds);
+            if (childLayout.Sizing == ElementSizing.ExpandToFillBounds)
+            {
+                if (stackContainer.Direction == Direction.Horizontal)
+                {
+                    childOuterConstraint = childOuterConstraint with
+                    {
+                        Width = Math.Min(fillElementsSizeConstraint.Width, currentContentBounds.Size.Width)
+                    };
+                }
+                else
+                {
+                    childOuterConstraint = childOuterConstraint with
+                    {
+                        Height = Math.Min(fillElementsSizeConstraint.Height, currentContentBounds.Size.Height)
+                    };
+                }
+            }
+
+            var childBounds = new Rectangle(childPoint, childOuterConstraint);
+            previousLayout = childLayout.ToPositionedLayout(childBounds);
             childPositionedLayouts.Add(previousLayout);
         }
 
         return new ContainerContent(childPositionedLayouts.ToArray(), BorderPen);
+    }
+
+    private Size CalculateFillElementsSizeConstraint(Size constraints)
+    {
+        int fillElementsCount =
+            ChildLayouts.Count(layout => layout.Sizing == ElementSizing.ExpandToFillBounds);
+        
+        if (fillElementsCount == 0)
+            return new Size();
+
+        IReadOnlyList<ILayout> contentSizedLayouts =
+            ChildLayouts.Where(layout => layout.Sizing == ElementSizing.Content).ToArray();
+
+        Size outerSizeOfContentLayoutsWithGapSum = contentSizedLayouts
+            .Select(layout => layout.ContentSize + layout.Margins.ToSize())
+            .GetCombinedSize(stackContainer.Direction, stackContainer.Gap);
+
+        if (stackContainer.Direction == Direction.Horizontal)
+        {
+            return constraints with
+            {
+                Width = (constraints.Width - outerSizeOfContentLayoutsWithGapSum.Width) / fillElementsCount
+            };
+        }
+
+        return constraints with
+        {
+            Height = (constraints.Height - outerSizeOfContentLayoutsWithGapSum.Height) / fillElementsCount
+        };
     }
 }

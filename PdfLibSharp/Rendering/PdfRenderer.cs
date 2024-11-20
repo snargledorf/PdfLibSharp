@@ -30,7 +30,7 @@ public static class PdfRenderer
                 ILayoutFactory pageLayoutFactory = page.CreateLayoutFactory(layoutScope, layoutBuilderFactory);
 
                 ILayout pageLayout = pageLayoutFactory.CreateLayout(pageSize);
-                var pageContentBounds = new Rectangle(new Point(pageLayout.Margins.Left, pageLayout.Margins.Top), pageLayout.ContentSize - pageLayout.Margins.ToSize());
+                var pageContentBounds = new Rectangle(Point.Zero, pageSize);
                 var positionedPageLayout = pageLayout.ToPositionedLayout(pageContentBounds);
 
                 using IGraphics graphics = Graphics.FromPdfPage(pdfPage);

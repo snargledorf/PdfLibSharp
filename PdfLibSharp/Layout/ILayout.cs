@@ -5,6 +5,7 @@ namespace PdfLibSharp.Layout;
 
 internal interface ILayout
 {
+    ElementSizing Sizing { get; }
     Margins Margins { get; }
     Size ContentSize { get; }
 

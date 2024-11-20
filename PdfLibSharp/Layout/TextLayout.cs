@@ -34,8 +34,13 @@ internal class TextLayout(
                     Y = previousLineLayout.ContentBounds.Bottom
                 };
             }
+
+            Size lineContentSize = line.ContentSize with
+            {
+                Width = contentBounds.Size.Width
+            };
             
-            var lineBounds = new Rectangle(linePoint, line.ContentSize);
+            var lineBounds = new Rectangle(linePoint, lineContentSize);
             
             previousLineLayout = new PositionedTextLine(line.Text, lineBounds);
             positionedLines.Add(previousLineLayout);
