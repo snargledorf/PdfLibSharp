@@ -5,7 +5,7 @@ namespace PdfLibSharp.Layout;
 
 internal static class StackContainerExtensions
 {
-    public static ILayoutBuilder GetLayoutBuilder(this IStackContainer stackContainer, LayoutScope scope, ILayoutBuilderFactory layoutBuilderFactory)
+    public static ILayoutFactory CreateLayoutFactory(this IStackContainer stackContainer, LayoutScope scope, ILayoutBuilderFactory layoutBuilderFactory)
     {
         scope = new LayoutScope
         (
@@ -15,16 +15,10 @@ internal static class StackContainerExtensions
             stackContainer.FontColor ?? scope.FontColor
         );
 
-        ILayoutBuilder[] childLayoutBuilders = stackContainer.Elements
-            .Select(element => layoutBuilderFactory.GetLayoutBuilder(element, scope))
+        ILayoutFactory[] childLayoutBuilders = stackContainer.Elements
+            .Select(element => layoutBuilderFactory.CreateLayoutFactory(element, scope))
             .ToArray();
 
-        Size contentSize = childLayoutBuilders
-            .Select(childLayoutBuilder => childLayoutBuilder.OuterSize)
-            .GetCombinedSize(stackContainer.Direction);
-
-        contentSize = stackContainer.GetSize(contentSize);
-
-        return new StackLayoutBuilder(stackContainer, contentSize, childLayoutBuilders);
+        return new StackLayoutFactory(stackContainer, childLayoutBuilders);
     }
 }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using PdfLibSharp.Drawing.Units;
 
 namespace PdfLibSharp.Drawing;
@@ -67,5 +68,10 @@ public readonly struct Dimension(double value, Unit unit) : IComparable<Dimensio
     public static bool operator !=(Dimension left, Dimension right)
     {
         return !(left == right);
+    }
+
+    public override string ToString()
+    {
+        return Points.ToString(CultureInfo.InvariantCulture);
     }
 }

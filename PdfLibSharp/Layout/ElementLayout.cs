@@ -3,16 +3,26 @@ using PdfLibSharp.Elements;
 
 namespace PdfLibSharp.Layout;
 
-internal abstract class ElementLayout(Point point, Size contentSize, Margins margins) : ILayout
+internal abstract class ElementLayout(IElement element, Size contentSize) : ILayout
 {
-    public Rectangle OuterBounds { get; } = new(
-        Point: point,
-        Size: contentSize + new Size(margins.Left + margins.Right, margins.Top + margins.Bottom)
-    );
+    public ElementSizing Sizing { get; } = element.Sizing;
+    public Margins Margins { get; } = element.Margins;
+    public Size ContentSize { get; } = contentSize;
 
-    public Rectangle ContentBounds { get; } = new
-    (
-        Point: point + new Point(margins.Left, margins.Top),
-        Size: contentSize
-    );
+    public PositionedLayout ToPositionedLayout(Rectangle outerBounds)
+    {
+        Size innerBoundsSize = outerBounds.Size - Margins.ToSize();
+        
+        var contentBounds = new Rectangle
+        (
+            Point: outerBounds.Point + new Point(Margins.Left, Margins.Top),
+            Size: element.GetSize(innerBoundsSize)
+        );
+        
+        object content = BuildContent(contentBounds);
+        
+        return new PositionedLayout(contentBounds, outerBounds, content);
+    }
+
+    protected abstract object BuildContent(Rectangle contentBounds);
 }

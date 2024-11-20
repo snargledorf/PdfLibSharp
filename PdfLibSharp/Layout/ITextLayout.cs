@@ -4,7 +4,7 @@ namespace PdfLibSharp.Layout;
 
 internal interface ITextLayout : ILayout
 {
-    IReadOnlyCollection<TextLineLayout> Lines { get; }
+    IReadOnlyCollection<TextLine> Lines { get; }
     StringFormat Format { get; }
     Brush Brush { get; }
     Font Font { get; }

@@ -1,21 +1,51 @@
 using PdfLibSharp.Drawing;
-using PdfLibSharp.Elements;
+using PdfLibSharp.Elements.Content;
 
 namespace PdfLibSharp.Layout;
 
 internal class TextLayout(
-    IReadOnlyCollection<TextLineLayout> lines,
-    Point point,
+    ITextElement textElement,
+    IReadOnlyCollection<TextLine> lines,
     Size contentSize,
-    Margins margins,
     Font font,
     StringFormat format,
     Brush brush,
     Pen? borderPen)
-    : BorderElementLayout(point, contentSize, margins, borderPen), ITextLayout
+    : BorderElementLayout(textElement, contentSize, borderPen), ITextLayout
 {
-    public IReadOnlyCollection<TextLineLayout> Lines { get; } = lines;
+    public IReadOnlyCollection<TextLine> Lines { get; } = lines;
     public StringFormat Format { get; } = format;
     public Brush Brush { get; } = brush;
     public Font Font { get; } = font;
+
+    protected override object BuildContent(Rectangle contentBounds)
+    {
+        var positionedLines = new List<PositionedTextLine>();
+        
+        Point linePoint = contentBounds.Point;
+
+        PositionedTextLine? previousLineLayout = null;
+        foreach (TextLine line in Lines)
+        {
+            if (previousLineLayout is not null)
+            {
+                linePoint = linePoint with
+                {
+                    Y = previousLineLayout.ContentBounds.Bottom
+                };
+            }
+
+            Size lineContentSize = line.ContentSize with
+            {
+                Width = contentBounds.Size.Width
+            };
+            
+            var lineBounds = new Rectangle(linePoint, lineContentSize);
+            
+            previousLineLayout = new PositionedTextLine(line.Text, lineBounds);
+            positionedLines.Add(previousLineLayout);
+        }
+        
+        return new TextContent(positionedLines.ToArray(), Font, Format, Brush, BorderPen);
+    }
 }

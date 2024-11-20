@@ -4,30 +4,28 @@ using PdfLibSharp.Elements.Layout;
 
 namespace PdfLibSharp.Layout;
 
-internal class LineLayoutBuilder(ILineElement lineElement, Size contentSize) 
-    : LayoutBuilderBase(lineElement, contentSize)
+internal class LineLayoutFactory(ILineElement lineElement) 
+    : ElementLayoutFactory(lineElement)
 {
-    public override ILayout BuildLayout(Rectangle bounds)
+    protected override ILayout CreateInnerLayout(Size constraints)
     {
-        Size size = ContentSize;
+        Size size;
         
         if (lineElement.Direction == Direction.Horizontal)
         {
-            size = size with
+            size = constraints with
             {
-                Width = bounds.Size.Width
+                Height = lineElement.Pen.Width
             };
         }
         else
         {
-            size = size with
+            size = constraints with
             {
-                Height = bounds.Size.Height
+                Width = lineElement.Pen.Width
             };
         }
 
-        Point end = bounds.Point + bounds.Size;
-
-        return new LineLayout(bounds.Point, end, lineElement.Pen, size, lineElement.Margins);
+        return new LineLayout(lineElement, size, lineElement.Pen);
     }
 }

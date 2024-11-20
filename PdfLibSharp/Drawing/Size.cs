@@ -1,3 +1,4 @@
+using PdfLibSharp.Elements;
 using PdfSharp.Drawing;
 
 namespace PdfLibSharp.Drawing;

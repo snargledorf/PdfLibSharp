@@ -11,4 +11,5 @@ public readonly record struct Rectangle(Point Point, Size Size)
     public Point TopLeft => Point;
     public Point BottomLeft => Point with { Y = Point.Y + Size.Height };
     public Dimension Right => Point.X + Size.Width;
+    public Point BottomRight => new(Point.X + Size.Width, Point.Y + Size.Height);
 }

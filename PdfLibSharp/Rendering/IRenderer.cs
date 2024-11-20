@@ -4,5 +4,5 @@ namespace PdfLibSharp.Rendering;
 
 internal interface IRenderer
 {
-    void Render(ILayout layout);
+    void Render(PositionedLayout layout);
 }

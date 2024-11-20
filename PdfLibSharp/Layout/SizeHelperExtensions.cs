@@ -7,12 +7,17 @@ public static class SizeHelperExtensions
 {
     public static Size GetCombinedSize(this IEnumerable<Size> elementSizes, Direction direction)
     {
-        IEnumerable<Size> enumerable = elementSizes as Size[] ?? elementSizes.ToArray();
+        return GetCombinedSize(elementSizes, direction, 0);
+    }
+
+    public static Size GetCombinedSize(this IEnumerable<Size> elementSizes, Direction direction, Dimension gap)
+    {
+        IReadOnlyCollection<Size> sizes = elementSizes as Size[] ?? elementSizes.ToArray();
         
-        if (!enumerable.Any())
+        if (!sizes.Any())
             return new Size();
         
-        return enumerable.Aggregate((current, next) =>
+        Size totalSize = sizes.Aggregate((current, next) =>
         {
             return direction switch
             {
@@ -29,5 +34,22 @@ public static class SizeHelperExtensions
                 _ => throw new ArgumentOutOfRangeException(nameof(direction))
             };
         });
+
+        Dimension gapSum = gap * (sizes.Count - 1);
+        if (gapSum <= 0)
+            return totalSize;
+        
+        if (direction == Direction.Horizontal)
+        {
+            return totalSize with
+            {
+                Width = totalSize.Width + gapSum
+            };
+        }
+        
+        return totalSize with
+        {
+            Height = totalSize.Height + gapSum
+        };
     }
 }

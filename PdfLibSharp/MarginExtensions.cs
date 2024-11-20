@@ -10,14 +10,8 @@ internal static class MarginExtensions
         return point + new Point(element.Margins.Left, element.Margins.Top);
     }
 
-    public static Size GetInnerSize(this IElement element, Size size)
+    public static Size ToSize(this Margins margins)
     {
-        var marginsSize = new Size
-        (
-            Width: element.Margins.Left + element.Margins.Right,
-            Height: element.Margins.Top + element.Margins.Bottom
-        );
-        
-        return size - marginsSize;
+        return new Size(margins.Left + margins.Right, margins.Top + margins.Bottom);
     }
 }

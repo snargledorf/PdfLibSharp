@@ -1,51 +1,54 @@
 using PdfLibSharp.Drawing;
 using PdfLibSharp.Layout;
-using PdfLibSharp.Elements;
-using PdfLibSharp.Elements.Content;
 
 namespace PdfLibSharp.Rendering;
 
 internal class Renderer(IGraphics graphics) : IRenderer
 {
-    public void Render(ILayout layout)
+    public void Render(PositionedLayout layout)
     {
-        switch (layout)
-        {
-            case ITextLayout textLayout:
-                RenderText(textLayout);
-                break;
-            case IImageLayout imageLayout:
-                RenderImage(imageLayout);
-                break;
-            case IContainerLayout containerLayout:
-                RenderContainer(containerLayout);
-                break;
-            case ILineLayout lineLayout:
-                RenderLine(lineLayout);
-                break;
-        }
+        RenderPrimaryLayout(layout);
 
-        if (layout is IBorderLayout { BorderPen: { } borderPen })
+        if (layout.Content is BorderedContent { BorderPen: { } borderPen })
             RenderBorder(layout.ContentBounds, borderPen);
     }
 
-    private void RenderLine(ILineLayout lineLayout)
+    private void RenderPrimaryLayout(PositionedLayout layout)
     {
-        graphics.DrawLine(lineLayout.Pen, lineLayout.Start, lineLayout.End);
+        switch (layout.Content)
+        {
+            case TextContent textContent:
+                RenderText(textContent);
+                break;
+            case ImageContent imageContent:
+                RenderImage(imageContent, layout.ContentBounds);
+                break;
+            case ContainerContent containerContent:
+                RenderContainer(containerContent);
+                break;
+            case LineContent lineContent:
+                RenderLine(lineContent, layout.ContentBounds);
+                break;
+        }
     }
 
-    private void RenderBorder(Rectangle rect, Pen borderPen)
+    private void RenderLine(LineContent lineLayout, Rectangle contentBounds)
     {
-        graphics.DrawRectangle(borderPen, rect);
+        graphics.DrawLine(lineLayout.Pen, contentBounds.TopLeft, contentBounds.BottomRight);
     }
 
-    private void RenderText(ITextLayout textLayout)
+    private void RenderBorder(Rectangle contentBounds, Pen borderPen)
     {
-        foreach (TextLineLayout line in textLayout.Lines)
+        graphics.DrawRectangle(borderPen, contentBounds);
+    }
+
+    private void RenderText(TextContent textContent)
+    {
+        foreach (PositionedTextLine line in textContent.Lines)
         {
             Rectangle bounds = line.ContentBounds;
         
-            if (textLayout.Format == StringFormat.BaseLineLeft)
+            if (textContent.Format == StringFormat.BaseLineLeft)
             {
                 // BaseLineLeft strings need to have a height of 0
                 bounds = bounds with
@@ -57,18 +60,18 @@ internal class Renderer(IGraphics graphics) : IRenderer
                 };
             }
             
-            graphics.DrawString(line.Text, textLayout.Font, textLayout.Brush, bounds, textLayout.Format);   
+            graphics.DrawString(line.Text, textContent.Font, textContent.Brush, bounds, textContent.Format);   
         }
     }
 
-    private void RenderImage(IImageLayout imageLayout)
+    private void RenderImage(ImageContent imageContent, Rectangle contentBounds)
     {
-        graphics.DrawImage(imageLayout.Image, imageLayout.ContentBounds);
+        graphics.DrawImage(imageContent.Image, contentBounds);
     }
 
-    private void RenderContainer(IContainerLayout containerLayout)
+    private void RenderContainer(ContainerContent containerLayout)
     {
-        foreach (ILayout childLayout in containerLayout.Children)
+        foreach (PositionedLayout childLayout in containerLayout.Children)
             Render(childLayout);
     }
 }
