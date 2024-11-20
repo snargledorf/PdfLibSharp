@@ -60,82 +60,89 @@ internal class StackLayout(
                     };
                 }
             }
-            
-            Point childPoint = currentContentBounds.Point;
-            Size childOuterConstraint = childLayout.ContentSize + childLayout.Margins.ToSize();
-            
-            if (stackContainer.Direction == Direction.Vertical)
-            {
-                switch (stackContainer.ElementAlignment)
-                {
-                    case ElementAlignment.Center:
-                        childPoint = childPoint with
-                        {
-                            X = childPoint.X + ((currentContentBounds.Size.Width - childOuterConstraint.Width) / 2)
-                        };
-                        break;
-                    case ElementAlignment.Stretch:
-                        childOuterConstraint = childOuterConstraint with
-                        {
-                            Width = currentContentBounds.Size.Width,
-                        };
-                        break;
-                    case ElementAlignment.Left:
-                        break;
-                    case ElementAlignment.Right:
-                        childPoint = childPoint with
-                        {
-                            X = childPoint.X + (currentContentBounds.Size.Width - childOuterConstraint.Width)
-                        };
-                        break;
-                    default:
-                        throw new NotImplementedException(
-                            $"ElementAlignment not implemented: {stackContainer.ElementAlignment}");
-                }
-            }
-            else // Horizontal
-            {
-                switch (stackContainer.ElementAlignment)
-                {
-                    case ElementAlignment.Center:
-                        childPoint = childPoint with
-                        {
-                            Y = childPoint.Y + ((currentContentBounds.Size.Height - childOuterConstraint.Height) / 2)
-                        };
-                        break;
-                    case ElementAlignment.Stretch:
-                        childOuterConstraint = childOuterConstraint with
-                        {
-                            Height = currentContentBounds.Size.Height,
-                        };
-                        break;
-                    case ElementAlignment.Left:
-                        break;
-                    case ElementAlignment.Right:
-                        childPoint = childPoint with
-                        {
-                            Y = childPoint.Y + (currentContentBounds.Size.Height - childOuterConstraint.Height)
-                        };
-                        break;
-                    default:
-                        throw new NotImplementedException(
-                            $"ElementAlignment not implemented: {stackContainer.ElementAlignment}");
-                }
-            }
 
-            childOuterConstraint = StackLayoutUtilities.UpdateConstraintsForElementSizing(
-                childOuterConstraint,
-                childLayout.Sizing,
+            Size childOuterSize = DetermineChildSizeOuterSize(
+                childLayout.ContentSize + childLayout.Margins.ToSize(),
                 fillElementsSizeConstraint,
                 currentContentBounds.Size,
-                stackContainer.Direction
+                childLayout.Sizing
             );
+            
+            Point childPoint = DetermineChildPoint(currentContentBounds, childOuterSize);
 
-            var childBounds = new Rectangle(childPoint, childOuterConstraint);
+            var childBounds = new Rectangle(childPoint, childOuterSize);
+            
             previousLayout = childLayout.ToPositionedLayout(childBounds);
             childPositionedLayouts.Add(previousLayout);
         }
 
         return new ContainerContent(childPositionedLayouts.ToArray(), BorderPen);
+    }
+
+    private Size DetermineChildSizeOuterSize(Size childCurrentOuterSize, Size fillElementsSizeConstraint, Size constraints, ElementSizing elementSizing)
+    {
+        if (stackContainer.ElementAlignment == ElementAlignment.Stretch)
+        {
+            if (stackContainer.Direction == Direction.Vertical)
+            {
+                childCurrentOuterSize = childCurrentOuterSize with
+                {
+                    Width = constraints.Width,
+                };
+            }
+            else // Horizontal
+            {
+                childCurrentOuterSize = childCurrentOuterSize with
+                {
+                    Height = constraints.Height,
+                };
+            }
+        }
+
+        return StackLayoutUtilities.UpdateConstraintsForElementSizing(
+            childCurrentOuterSize,
+            elementSizing,
+            fillElementsSizeConstraint,
+            constraints,
+            stackContainer.Direction
+        );
+    }
+
+    private Point DetermineChildPoint(Rectangle bounds, Size childOuterSize)
+    {
+        if (stackContainer.Direction == Direction.Vertical)
+        {
+            switch (stackContainer.ElementAlignment)
+            {
+                case ElementAlignment.Center:
+                    return bounds.Point with
+                    {
+                        X = bounds.Point.X + ((bounds.Size.Width - childOuterSize.Width) / 2)
+                    };
+                case ElementAlignment.Right:
+                    return bounds.Point with
+                    {
+                        X = bounds.Point.X + (bounds.Size.Width - childOuterSize.Width)
+                    };
+            }
+        }
+        else // Horizontal
+        {
+            switch (stackContainer.ElementAlignment)
+            {
+                case ElementAlignment.Center:
+                    return bounds.Point with
+                    {
+                        Y = bounds.Point.Y + ((bounds.Size.Height - childOuterSize.Height) / 2)
+                    };
+                case ElementAlignment.Right:
+                    return bounds.Point with
+                    {
+                        Y = bounds.Point.Y + (bounds.Size.Height - childOuterSize.Height)
+                    };
+            }
+        }
+
+        return bounds.Point;
     }
 }
