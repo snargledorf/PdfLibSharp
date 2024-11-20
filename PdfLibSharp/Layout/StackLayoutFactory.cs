@@ -22,8 +22,11 @@ internal class StackLayoutFactory(IStackContainer stackContainer, ILayoutFactory
 
     private Size GetFillElementsSizeConstraint(Size constraints)
     {
-        IEnumerable<ILayoutFactory> contentSizedLayoutFactories = childLayoutFactories.Where(factory => factory.Element.Sizing == ElementSizing.Content);
-        IReadOnlyList<ILayout> contentSizedLayouts = BuildChildLayouts(contentSizedLayoutFactories, constraints, new Size()).ToArray();
+        IEnumerable<ILayoutFactory> contentSizedLayoutFactories =
+            childLayoutFactories.Where(factory => factory.Element.Sizing == ElementSizing.Content);
+        
+        IReadOnlyList<ILayout> contentSizedLayouts =
+            BuildChildLayouts(contentSizedLayoutFactories, constraints, new Size()).ToArray();
 
         return StackLayoutUtilities.CalculateFillElementsSizeConstraint(
             contentSizedLayouts,
@@ -33,7 +36,10 @@ internal class StackLayoutFactory(IStackContainer stackContainer, ILayoutFactory
         );
     }
 
-    private IEnumerable<ILayout> BuildChildLayouts(IEnumerable<ILayoutFactory> layoutFactories, Size constraints, Size fillElementsSizeConstraint)
+    private IEnumerable<ILayout> BuildChildLayouts(
+        IEnumerable<ILayoutFactory> layoutFactories, 
+        Size constraints,
+        Size fillElementsSizeConstraint)
     {
         ILayout? previousLayout = null;
         foreach (ILayoutFactory layoutFactory in layoutFactories)
@@ -41,7 +47,7 @@ internal class StackLayoutFactory(IStackContainer stackContainer, ILayoutFactory
             if (previousLayout is not null)
             {
                 Size previousLayoutOuterSize = previousLayout.ContentSize + previousLayout.Margins.ToSize();
-                
+
                 constraints = StackLayoutUtilities.UpdateConstraints(
                     constraints,
                     previousLayoutOuterSize,
@@ -50,26 +56,14 @@ internal class StackLayoutFactory(IStackContainer stackContainer, ILayoutFactory
                 );
             }
 
-            Size elementConstraints = constraints;
+            Size elementConstraints = StackLayoutUtilities.UpdateConstraintsForElementSizing(
+                constraints,
+                layoutFactory.Element.Sizing,
+                fillElementsSizeConstraint,
+                constraints,
+                stackContainer.Direction
+            );
 
-            if (layoutFactory.Element.Sizing == ElementSizing.ExpandToFillBounds)
-            {
-                if (stackContainer.Direction == Direction.Horizontal)
-                {
-                    elementConstraints = elementConstraints with
-                    {
-                        Width = Math.Min(fillElementsSizeConstraint.Width, elementConstraints.Width)
-                    };
-                }
-                else
-                {
-                    elementConstraints = elementConstraints with
-                    {
-                        Height = Math.Min(fillElementsSizeConstraint.Height, elementConstraints.Height)
-                    };
-                }
-            }
-            
             previousLayout = layoutFactory.CreateLayout(elementConstraints);
             yield return previousLayout;
         }

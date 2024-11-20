@@ -51,5 +51,24 @@ namespace PdfLibSharp.Layout
                 Height = constraints.Height - outerSizeWithGap.Height
             };
         }
+
+        public static Size UpdateConstraintsForElementSizing(Size constraints, ElementSizing elementSizing, Size fillSizeConstraint, Size outerContraints, Direction direction)
+        {
+            if (elementSizing != ElementSizing.ExpandToFillBounds)
+                return constraints;
+        
+            if (direction == Direction.Horizontal)
+            {
+                return constraints with
+                {
+                    Width = Math.Min(fillSizeConstraint.Width, outerContraints.Width)
+                };
+            }
+
+            return constraints with
+            {
+                Height = Math.Min(fillSizeConstraint.Height, outerContraints.Height)
+            };
+        }
     }
 }

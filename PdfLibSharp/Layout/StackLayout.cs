@@ -123,23 +123,13 @@ internal class StackLayout(
                 }
             }
 
-            if (childLayout.Sizing == ElementSizing.ExpandToFillBounds)
-            {
-                if (stackContainer.Direction == Direction.Horizontal)
-                {
-                    childOuterConstraint = childOuterConstraint with
-                    {
-                        Width = Math.Min(fillElementsSizeConstraint.Width, currentContentBounds.Size.Width)
-                    };
-                }
-                else
-                {
-                    childOuterConstraint = childOuterConstraint with
-                    {
-                        Height = Math.Min(fillElementsSizeConstraint.Height, currentContentBounds.Size.Height)
-                    };
-                }
-            }
+            childOuterConstraint = StackLayoutUtilities.UpdateConstraintsForElementSizing(
+                childOuterConstraint,
+                childLayout.Sizing,
+                fillElementsSizeConstraint,
+                currentContentBounds.Size,
+                stackContainer.Direction
+            );
 
             var childBounds = new Rectangle(childPoint, childOuterConstraint);
             previousLayout = childLayout.ToPositionedLayout(childBounds);
