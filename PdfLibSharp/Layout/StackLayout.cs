@@ -13,7 +13,12 @@ internal class StackLayout(
 {
     protected override object BuildContent(Rectangle contentBounds)
     {
-        Size fillElementsSizeConstraint = CalculateFillElementsSizeConstraint(contentBounds.Size);
+        Size fillElementsSizeConstraint = StackLayoutUtilities.CalculateFillElementsSizeConstraint(
+            ChildLayouts,
+            contentBounds.Size,
+            stackContainer.Direction,
+            stackContainer.Gap
+        );
         
         var childPositionedLayouts = new List<PositionedLayout>();
         
@@ -24,35 +29,35 @@ internal class StackLayout(
         {
             if (previousLayout is not null)
             {
+                currentContentBounds = currentContentBounds with
+                {
+                    Size = StackLayoutUtilities.UpdateConstraints(
+                        currentContentBounds.Size,
+                        previousLayout.OuterBounds.Size,
+                        stackContainer.Direction,
+                        stackContainer.Gap
+                    )
+                };
+                
                 if (stackContainer.Direction == Direction.Horizontal)
                 {
-                    currentContentBounds = new Rectangle
-                    (
-                        Point: currentContentBounds.Point with
+                    currentContentBounds = currentContentBounds with
+                    {
+                        Point = currentContentBounds.Point with
                         {
                             X = previousLayout.OuterBounds.Right + stackContainer.Gap
-                        },
-                        Size: currentContentBounds.Size with
-                        {
-                            Width = currentContentBounds.Size.Width -
-                                    (previousLayout.OuterBounds.Size.Width + stackContainer.Gap)
                         }
-                    );
+                    };
                 }
                 else
                 {
-                    currentContentBounds = new Rectangle
-                    (
-                        Point: currentContentBounds.Point with
+                    currentContentBounds = currentContentBounds with
+                    {
+                        Point = currentContentBounds.Point with
                         {
                             Y = previousLayout.OuterBounds.Bottom + stackContainer.Gap
-                        },
-                        Size: currentContentBounds.Size with
-                        {
-                            Height = currentContentBounds.Size.Height -
-                                     (previousLayout.OuterBounds.Size.Height + stackContainer.Gap)
                         }
-                    );
+                    };
                 }
             }
             
@@ -142,34 +147,5 @@ internal class StackLayout(
         }
 
         return new ContainerContent(childPositionedLayouts.ToArray(), BorderPen);
-    }
-
-    private Size CalculateFillElementsSizeConstraint(Size constraints)
-    {
-        int fillElementsCount =
-            ChildLayouts.Count(layout => layout.Sizing == ElementSizing.ExpandToFillBounds);
-        
-        if (fillElementsCount == 0)
-            return new Size();
-
-        IReadOnlyList<ILayout> contentSizedLayouts =
-            ChildLayouts.Where(layout => layout.Sizing == ElementSizing.Content).ToArray();
-
-        Size outerSizeOfContentLayoutsWithGapSum = contentSizedLayouts
-            .Select(layout => layout.ContentSize + layout.Margins.ToSize())
-            .GetCombinedSize(stackContainer.Direction, stackContainer.Gap);
-
-        if (stackContainer.Direction == Direction.Horizontal)
-        {
-            return constraints with
-            {
-                Width = (constraints.Width - outerSizeOfContentLayoutsWithGapSum.Width) / fillElementsCount
-            };
-        }
-
-        return constraints with
-        {
-            Height = (constraints.Height - outerSizeOfContentLayoutsWithGapSum.Height) / fillElementsCount
-        };
     }
 }
