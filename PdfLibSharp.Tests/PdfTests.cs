@@ -37,4 +37,15 @@ public class PdfTests
         
         Assert.That(memoryStream.Length, Is.GreaterThan(0));
     }
+
+    [Test]
+    public async Task ComplexPdf()
+    {
+        Pdf pdf = ComplexPdfBuilder.GeneratePdf();
+
+        var memoryStream = new MemoryStream();
+        await PdfRenderer.RenderAsync(pdf, memoryStream);
+        
+        Assert.That(memoryStream.Length, Is.GreaterThan(0));
+    }
 }
