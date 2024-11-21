@@ -6,25 +6,27 @@ using PdfLibSharp.Layout;
 
 namespace PdfLibSharp.Tests;
 
-public class StackLayoutTests
+public class StackRenderModelTests
 {
     private IMeasureGraphics _measureGraphics;
     private LayoutScope _layoutScope;
-    private LayoutFactoryFactory _layoutFactoryFactory;
+    private LayoutModelFactoryProvider _layoutModelFactoryProvider;
+    private RenderLayoutFactoryProvider _renderLayoutFactoryProvider;
 
     [SetUp]
     public void Setup()
     {
         _measureGraphics = Graphics.ForMeasure(PageSize.Letter.Size);
         _layoutScope = new LayoutScope(new Font("Times New Roman", 12), 1.2, StringFormat.BaseLineLeft, Color.Black);
-        _layoutFactoryFactory = new LayoutFactoryFactory(_measureGraphics);
+        _layoutModelFactoryProvider = new LayoutModelFactoryProvider(_measureGraphics);
+        _renderLayoutFactoryProvider = new RenderLayoutFactoryProvider();
     }
 
     [TearDown]
     public void Teardown()
     {
         _measureGraphics.Dispose();
-        _layoutFactoryFactory.Dispose();
+        _layoutModelFactoryProvider.Dispose();
     }
     
     [Test]
@@ -41,18 +43,20 @@ public class StackLayoutTests
         stackElement.Add(textElement);
 
         // Act
-        ILayoutFactory layoutFactory = stackElement.CreateLayoutFactory(_layoutScope, _layoutFactoryFactory);
+        var layoutModelFactory = new StackLayoutModelFactory(_layoutModelFactoryProvider);
         
-        ILayout layout = layoutFactory.CreateLayout(PageSize.Letter.Size);
+        LayoutModel layoutModel = layoutModelFactory.CreateLayoutModel(stackElement, PageSize.Letter.Size, _layoutScope);
 
-        var positionedLayout = layout.ToPositionedLayout(new Rectangle(Point.Zero, PageSize.Letter.Size));
+        var renderLayoutFactory = new StackRenderLayoutFactory(_renderLayoutFactoryProvider);
+
+        RenderLayout renderLayout = renderLayoutFactory.CreateRenderLayout(layoutModel, new Rectangle(Point.Zero, PageSize.Letter.Size));
 
         // Assert
-        Dimension expectedTextLayoutContentWidth = ((StackLayout)layout).ChildLayouts[0].ContentSize.Width;
-        Size stackPositionedLayoutContentSize = positionedLayout.ContentBounds.Size;
+        Dimension expectedTextLayoutContentWidth = ((StackRenderModel)layoutModel.ContentModel).ChildLayoutModels[0].ContentModel.Size.Width;
+        Size stackPositionedLayoutContentSize = renderLayout.Content.Bounds.Size;
         
-        var containerContent = positionedLayout.ContentAs<ContainerContent>();
-        PositionedLayout containerChild = containerContent.Children[0];
+        var containerContent = renderLayout.ContentAs<ContainerContent>();
+        RenderLayout containerChild = containerContent.Children[0];
 
         Size childOuterSize = containerChild.OuterBounds.Size;
        
@@ -77,18 +81,20 @@ public class StackLayoutTests
         stackElement.Add(textElement);
 
         // Act
-        ILayoutFactory layoutFactory = stackElement.CreateLayoutFactory(_layoutScope, _layoutFactoryFactory);
+        var layoutModelFactory = new StackLayoutModelFactory(_layoutModelFactoryProvider);
+        
+        LayoutModel layoutModel = layoutModelFactory.CreateLayoutModel(stackElement, PageSize.Letter.Size, _layoutScope);
 
-        ILayout layout = layoutFactory.CreateLayout(PageSize.Letter.Size);
+        var renderLayoutFactory = new StackRenderLayoutFactory(_renderLayoutFactoryProvider);
 
-        var positionedLayout = layout.ToPositionedLayout(new Rectangle(Point.Zero, PageSize.Letter.Size));
+        RenderLayout renderLayout = renderLayoutFactory.CreateRenderLayout(layoutModel, new Rectangle(Point.Zero, PageSize.Letter.Size));
 
         // Assert
-        Dimension expectedTextLayoutContentHeight = ((StackLayout)layout).ChildLayouts[0].ContentSize.Height;
-        Size stackPositionedLayoutContentSize = positionedLayout.ContentBounds.Size;
+        Dimension expectedTextLayoutContentHeight = ((StackRenderModel)layoutModel.ContentModel).ChildLayoutModels[0].ContentModel.Size.Height;
+        Size stackPositionedLayoutContentSize = renderLayout.Content.Bounds.Size;
 
-        var containerContent = positionedLayout.ContentAs<ContainerContent>();
-        PositionedLayout containerChild = containerContent.Children[0];
+        var containerContent = renderLayout.ContentAs<ContainerContent>();
+        RenderLayout containerChild = containerContent.Children[0];
 
         Size childOuterSize = containerChild.OuterBounds.Size;
 

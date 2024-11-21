@@ -1,31 +1,30 @@
-using PdfLibSharp.Drawing;
+﻿using PdfLibSharp.Drawing;
 using PdfLibSharp.Elements;
 using PdfLibSharp.Elements.Layout;
 
 namespace PdfLibSharp.Layout;
 
-internal class StackLayout(
-    IStackContainer stackContainer,
-    Size contentSize,
-    Pen? borderPen,
-    IReadOnlyList<ILayout> childLayouts)
-    : ContainerLayout(stackContainer, contentSize, borderPen, childLayouts)
+internal sealed class StackRenderLayoutFactory(IRenderLayoutFactoryProvider renderLayoutFactoryProvider) : BaseRenderLayoutFactory
 {
-    protected override object BuildContent(Rectangle contentBounds)
+    protected override Content BuildContent(ContentModel contentModel, Rectangle contentBounds)
     {
+        if (contentModel is not StackRenderModel stackContentModel)
+            throw new ArgumentException("ContentModel must be a StackContentModel", nameof(contentModel));
+        
         Size fillElementsSizeConstraint = StackLayoutUtilities.CalculateFillElementsSizeConstraint(
-            ChildLayouts,
+            stackContentModel.ContentSizedChildModels,
+            stackContentModel.FillElementsCount,
             contentBounds.Size,
-            stackContainer.Direction,
-            stackContainer.Gap
+            stackContentModel.StackContainer.Direction,
+            stackContentModel.StackContainer.Gap
         );
         
-        var childPositionedLayouts = new List<PositionedLayout>();
+        var childPositionedLayouts = new List<RenderLayout>();
         
         Rectangle currentContentBounds = contentBounds;
 
-        PositionedLayout? previousLayout = null;
-        foreach (ILayout childLayout in ChildLayouts)
+        RenderLayout? previousLayout = null;
+        foreach (LayoutModel childLayoutModel in stackContentModel.ChildLayoutModels)
         {
             if (previousLayout is not null)
             {
@@ -34,18 +33,18 @@ internal class StackLayout(
                     Size = StackLayoutUtilities.UpdateConstraints(
                         currentContentBounds.Size,
                         previousLayout.OuterBounds.Size,
-                        stackContainer.Direction,
-                        stackContainer.Gap
+                        stackContentModel.StackContainer.Direction,
+                        stackContentModel.StackContainer.Gap
                     )
                 };
                 
-                if (stackContainer.Direction == Direction.Horizontal)
+                if (stackContentModel.StackContainer.Direction == Direction.Horizontal)
                 {
                     currentContentBounds = currentContentBounds with
                     {
                         Point = currentContentBounds.Point with
                         {
-                            X = previousLayout.OuterBounds.Right + stackContainer.Gap
+                            X = previousLayout.OuterBounds.Right + stackContentModel.StackContainer.Gap
                         }
                     };
                 }
@@ -55,35 +54,49 @@ internal class StackLayout(
                     {
                         Point = currentContentBounds.Point with
                         {
-                            Y = previousLayout.OuterBounds.Bottom + stackContainer.Gap
+                            Y = previousLayout.OuterBounds.Bottom + stackContentModel.StackContainer.Gap
                         }
                     };
                 }
             }
 
             Size childOuterSize = DetermineChildSizeOuterSize(
-                childLayout.ContentSize + childLayout.Margins.ToSize(),
+                childLayoutModel.ContentModel.Size + childLayoutModel.Margins.ToSize(),
                 fillElementsSizeConstraint,
                 currentContentBounds.Size,
-                childLayout.Sizing
+                childLayoutModel.Sizing,
+                stackContentModel.StackContainer.ElementAlignment,
+                stackContentModel.StackContainer.Direction
             );
-            
-            Point childPoint = DetermineChildPoint(currentContentBounds, childOuterSize);
+
+            Point childPoint = DetermineChildPoint(
+                currentContentBounds,
+                childOuterSize,
+                stackContentModel.StackContainer.ElementAlignment,
+                stackContentModel.StackContainer.Direction
+            );
 
             var childBounds = new Rectangle(childPoint, childOuterSize);
-            
-            previousLayout = childLayout.ToPositionedLayout(childBounds);
+
+            IRenderLayoutFactory renderLayoutFactory = renderLayoutFactoryProvider.GetFactory(childLayoutModel.ContentModel.GetType());
+            previousLayout = renderLayoutFactory.CreateRenderLayout(childLayoutModel, childBounds);
             childPositionedLayouts.Add(previousLayout);
         }
 
-        return new ContainerContent(childPositionedLayouts.ToArray(), BorderPen);
+        return new ContainerContent(contentBounds, stackContentModel.BorderPen, childPositionedLayouts.ToArray());
     }
 
-    private Size DetermineChildSizeOuterSize(Size childCurrentOuterSize, Size fillElementsSizeConstraint, Size constraints, ElementSizing elementSizing)
+    private static Size DetermineChildSizeOuterSize(
+        Size childCurrentOuterSize,
+        Size fillElementsSizeConstraint,
+        Size constraints,
+        ElementSizing elementSizing,
+        ElementAlignment elementAlignment, 
+        Direction direction)
     {
-        if (stackContainer.ElementAlignment == ElementAlignment.Stretch)
+        if (elementAlignment == ElementAlignment.Stretch)
         {
-            if (stackContainer.Direction == Direction.Vertical)
+            if (direction == Direction.Vertical)
             {
                 childCurrentOuterSize = childCurrentOuterSize with
                 {
@@ -104,15 +117,19 @@ internal class StackLayout(
             elementSizing,
             fillElementsSizeConstraint,
             constraints,
-            stackContainer.Direction
+            direction
         );
     }
 
-    private Point DetermineChildPoint(Rectangle bounds, Size childOuterSize)
+    private static Point DetermineChildPoint(
+        Rectangle bounds, 
+        Size childOuterSize,
+        ElementAlignment elementAlignment, 
+        Direction direction)
     {
-        if (stackContainer.Direction == Direction.Vertical)
+        if (direction == Direction.Vertical)
         {
-            switch (stackContainer.ElementAlignment)
+            switch (elementAlignment)
             {
                 case ElementAlignment.Center:
                     return bounds.Point with
@@ -128,7 +145,7 @@ internal class StackLayout(
         }
         else // Horizontal
         {
-            switch (stackContainer.ElementAlignment)
+            switch (elementAlignment)
             {
                 case ElementAlignment.Center:
                     return bounds.Point with

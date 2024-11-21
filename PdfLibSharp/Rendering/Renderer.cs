@@ -5,15 +5,15 @@ namespace PdfLibSharp.Rendering;
 
 internal class Renderer(IGraphics graphics) : IRenderer
 {
-    public void Render(PositionedLayout layout)
+    public void Render(RenderLayout layout)
     {
         RenderPrimaryLayout(layout);
 
-        if (layout.Content is BorderedContent { BorderPen: { } borderPen })
-            RenderBorder(layout.ContentBounds, borderPen);
+        if (layout.Content is BorderedContent { BorderPen: { } borderPen } borderedContent)
+            RenderBorder(borderedContent.Bounds, borderPen);
     }
 
-    private void RenderPrimaryLayout(PositionedLayout layout)
+    private void RenderPrimaryLayout(RenderLayout layout)
     {
         switch (layout.Content)
         {
@@ -21,20 +21,20 @@ internal class Renderer(IGraphics graphics) : IRenderer
                 RenderText(textContent);
                 break;
             case ImageContent imageContent:
-                RenderImage(imageContent, layout.ContentBounds);
+                RenderImage(imageContent);
                 break;
             case ContainerContent containerContent:
                 RenderContainer(containerContent);
                 break;
             case LineContent lineContent:
-                RenderLine(lineContent, layout.ContentBounds);
+                RenderLine(lineContent);
                 break;
         }
     }
 
-    private void RenderLine(LineContent lineLayout, Rectangle contentBounds)
+    private void RenderLine(LineContent lineContent)
     {
-        graphics.DrawLine(lineLayout.Pen, contentBounds.TopLeft, contentBounds.BottomRight);
+        graphics.DrawLine(lineContent.Pen, lineContent.Bounds.TopLeft, lineContent.Bounds.BottomRight);
     }
 
     private void RenderBorder(Rectangle contentBounds, Pen borderPen)
@@ -64,14 +64,14 @@ internal class Renderer(IGraphics graphics) : IRenderer
         }
     }
 
-    private void RenderImage(ImageContent imageContent, Rectangle contentBounds)
+    private void RenderImage(ImageContent imageContent)
     {
-        graphics.DrawImage(imageContent.Image, contentBounds);
+        graphics.DrawImage(imageContent.Image, imageContent.Bounds);
     }
 
-    private void RenderContainer(ContainerContent containerLayout)
+    private void RenderContainer(ContainerContent containerContent)
     {
-        foreach (PositionedLayout childLayout in containerLayout.Children)
+        foreach (RenderLayout childLayout in containerContent.Children)
             Render(childLayout);
     }
 }
