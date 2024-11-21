@@ -4,11 +4,14 @@ using PdfLibSharp.Elements.Layout;
 
 namespace PdfLibSharp.Layout;
 
-internal class LineLayoutFactory(ILineElement lineElement) 
-    : ElementLayoutFactory(lineElement)
+internal class LineLayoutModelFactory
+    : BaseLayoutModelFactory
 {
-    protected override ILayout CreateInnerLayout(Size constraints)
+    protected override ContentModel CreateContentModel(IElement element, Size constraints, LayoutScope scope)
     {
+        if (element is not LineElement lineElement)
+            throw new ArgumentException("Element must implement LineElement", nameof(element));
+        
         Size size;
         
         if (lineElement.Direction == Direction.Horizontal)
@@ -26,6 +29,6 @@ internal class LineLayoutFactory(ILineElement lineElement)
             };
         }
 
-        return new LineLayout(lineElement, size, lineElement.Pen);
+        return new LineContentModel(size, lineElement.Direction, lineElement.Pen);
     }
 }

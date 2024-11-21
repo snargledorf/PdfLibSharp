@@ -1,19 +1,24 @@
 using System.Text;
 using PdfLibSharp.Drawing;
+using PdfLibSharp.Elements;
 using PdfLibSharp.Elements.Content;
 using PdfLibSharp.Elements.Layout;
 
 namespace PdfLibSharp.Layout;
 
-internal class TextLayoutFactory(ITextElement textElement, LayoutScope layoutScope, IMeasureGraphics measureGraphics)
-    : BorderLayoutFactory(textElement)
+internal class TextLayoutModelFactory(IMeasureGraphics measureGraphics)
+    : BorderLayoutModelFactory
 {
-    protected override ILayout CreateInnerLayout(Size constraints)
+    protected override ContentModel CreateBorderedContentModel(IBorderElement borderElement, Pen? borderPen, Size constraints,
+        LayoutScope scope)
     {
-        Font font = textElement.GetFont(layoutScope.Font);
-        double lineHeight = textElement.LineHeight ?? layoutScope.LineHeight;
-        StringFormat stringFormat = textElement.StringFormat ?? layoutScope.StringFormat;
-        Color fontColor = textElement.FontColor ?? layoutScope.FontColor;
+        if (borderElement is not ITextElement textElement)
+            throw new ArgumentException("Element must implement ITextElement", nameof(borderElement));
+        
+        Font font = textElement.GetFont(scope.Font);
+        double lineHeight = textElement.LineHeight ?? scope.LineHeight;
+        StringFormat stringFormat = textElement.StringFormat ?? scope.StringFormat;
+        Color fontColor = textElement.FontColor ?? scope.FontColor;
 
         IReadOnlyCollection<IReadOnlyCollection<Word>> lines = TextLayoutBuilderHelpers.GetLines(textElement.Text, font, lineHeight, measureGraphics);
         
@@ -57,16 +62,14 @@ internal class TextLayoutFactory(ITextElement textElement, LayoutScope layoutSco
         // Content size could be greater than constraints (IE. Overflow)
         // TODO: Add overflow handling/logic
         Size contentSize = lineLayouts
-            .Select(ll => ll.ContentSize)
+            .Select(ll => ll.Size)
             .GetCombinedSize(Direction.Vertical);
 
-        return new TextLayout(
-            textElement,
-            lineLayouts.ToArray(),
+        return new TextContentModel(lineLayouts.ToArray(),
             textElement.GetSize(contentSize),
             font,
             stringFormat,
             new SolidBrush(fontColor),
-            BorderPen);
+            borderPen);
     }
 }
