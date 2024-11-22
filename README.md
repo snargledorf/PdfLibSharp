@@ -2,4 +2,4 @@
 
 This library was created because MigraDoc doesn't support auto sizing columns/rows
 
-`dotnet add package PdfLibSharp --version 1.0.0-alpha1`
+`dotnet add package PdfLibSharp`
