@@ -4,10 +4,7 @@ namespace PdfLibSharp.Elements;
 
 internal sealed class Page : StackContainer, IPage
 {
-    internal Page(Pdf pdf) : base(Direction.Vertical)
+    internal Page(Pdf pdf) : base(Direction.Vertical, pdf)
     {
-        Pdf = pdf;
     }
-
-    public Pdf Pdf { get; }
 }

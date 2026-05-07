@@ -6,46 +6,49 @@ namespace PdfLibSharp.Elements;
 
 public static class ContainerExtensions
 {
-    public static IImageElement AddImage(this IContainer container, string filePath)
+    extension(IContainer container)
     {
-        var imageContent = new ImageElement(Image.FromFile(filePath));
-        container.Add(imageContent);
-        return imageContent;
-    }
+        public IImageElement AddImage(string filePath)
+        {
+            var imageContent = new ImageElement(container.Pdf.ImageLoader.LoadImageFromFile(filePath));
+            container.Add(imageContent);
+            return imageContent;
+        }
 
-    public static ITextElement AddText(this IContainer container, string text)
-    {
-        var textContent = new TextElement(text);
-        container.Add(textContent);
-        return textContent;
-    }
+        public ITextElement AddText(string text)
+        {
+            var textContent = new TextElement(text);
+            container.Add(textContent);
+            return textContent;
+        }
 
-    public static IStackContainer AddStack(this IContainer container, Direction direction)
-    {
-        var stack = new StackContainer(direction);
-        container.Add(stack);
-        return stack;
-    }
+        public IStackContainer AddStack(Direction direction)
+        {
+            var stack = new StackContainer(direction, container.Pdf);
+            container.Add(stack);
+            return stack;
+        }
 
-    public static ILineElement AddLine(this IContainer container)
-    {
-        return AddLine(container, 1);
-    }
+        public ILineElement AddLine()
+        {
+            return container.AddLine(1);
+        }
 
-    public static ILineElement AddLine(this IContainer container, Dimension width)
-    {
-        return AddLine(container, width, Color.Black);
-    }
+        public ILineElement AddLine(Dimension width)
+        {
+            return container.AddLine(width, Color.Black);
+        }
 
-    public static ILineElement AddLine(this IContainer container, Dimension width, Color color)
-    {
-        return AddLine(container, new Pen(color, width));
-    }
+        public ILineElement AddLine(Dimension width, Color color)
+        {
+            return container.AddLine(new Pen(color, width));
+        }
 
-    public static ILineElement AddLine(this IContainer container, Pen pen)
-    {
-        var lineElement = new LineElement(pen);
-        container.Add(lineElement);
-        return lineElement;
+        public ILineElement AddLine(Pen pen)
+        {
+            var lineElement = new LineElement(pen);
+            container.Add(lineElement);
+            return lineElement;
+        }
     }
 }

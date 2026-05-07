@@ -1,3 +1,4 @@
+using System;
 using PdfLibSharp.Drawing;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
@@ -12,7 +13,9 @@ public sealed class Graphics : IGraphics
     {
         _backingGraphics = backingGraphics;
     }
-
+    
+    public static IImageLoader ImageLoader { get; } = PdfSharpImageLoader.Instance;
+    
     public static IMeasureGraphics ForMeasure(Size size)
     {
         return new MeasureGraphics(XGraphics.CreateMeasureContext(size.ToXSize(), XGraphicsUnit.Point,
@@ -29,9 +32,12 @@ public sealed class Graphics : IGraphics
         return _backingGraphics.MeasureString(text, font.ToXFont()).ToSize();
     }
 
-    public void DrawImage(Image image, Rectangle rect)
+    public void DrawImage(IImage image, Rectangle rect)
     {
-        _backingGraphics.DrawImage(image, rect);
+        if (image is PdfSharpImage pdfSharpImage)
+            _backingGraphics.DrawImage(pdfSharpImage, rect);
+        else
+            throw new ArgumentException("Only PdfSharpImage is supported for drawing");
     }
 
     public void DrawString(string value, Font font, Brush brush, Rectangle rect, StringFormat format)

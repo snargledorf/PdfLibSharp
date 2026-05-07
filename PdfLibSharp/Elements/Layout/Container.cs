@@ -2,9 +2,11 @@ using PdfLibSharp.Drawing;
 
 namespace PdfLibSharp.Elements.Layout;
 
-internal abstract class Container : BaseBorderElement, IContainer
+internal abstract class Container(Pdf pdf) : BaseBorderElement, IContainer
 {
     private readonly List<IElement> _elements = [];
+
+    public Pdf Pdf { get; } = pdf;
     
     public IReadOnlyList<IElement> Elements => _elements.AsReadOnly();
 

@@ -4,5 +4,5 @@ namespace PdfLibSharp.Elements.Content;
 
 public interface IImageElement : IBorderElement
 {
-    Image Image { get; }
+    IImage Image { get; }
 }
