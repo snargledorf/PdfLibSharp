@@ -40,10 +40,7 @@ public sealed class Graphics : IGraphics
 
     public void DrawString(string value, Font font, Brush brush, Rectangle rect, StringFormat format)
     {
-        if (brush is not IPdfSharpBrush pdfSharpBrush)
-            throw new ArgumentException("Brush is not a IPdfSharpBrush", nameof(brush));
-        
-        _backingGraphics.DrawString(value, font, pdfSharpBrush.XBrush, rect, format);
+        _backingGraphics.DrawString(value, font, brush.ToXBrush(), rect, format);
     }
 
     public void DrawLine(Pen pen, Point start, Point end)

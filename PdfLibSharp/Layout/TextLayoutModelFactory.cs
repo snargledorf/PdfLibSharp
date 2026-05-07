@@ -6,7 +6,7 @@ using PdfLibSharp.Elements.Layout;
 
 namespace PdfLibSharp.Layout;
 
-internal class TextLayoutModelFactory(IMeasureGraphics measureGraphics)
+internal class TextLayoutModelFactory(IMeasureGraphics measureGraphics, IDrawingLoaders drawingLoaders)
     : BorderLayoutModelFactory
 {
     protected override ContentModel CreateBorderedContentModel(IBorderElement borderElement, Pen? borderPen, Size constraints,
