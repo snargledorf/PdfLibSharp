@@ -2,5 +2,5 @@ using PdfLibSharp.Drawing;
 
 namespace PdfLibSharp.Layout;
 
-internal record ImageContent(Image Image, Rectangle Bounds, Pen? BorderPen) 
+internal record ImageContent(IImage Image, Rectangle Bounds, Pen? BorderPen) 
     : BorderedContent(Bounds, BorderPen);
