@@ -1,17 +1,8 @@
 using System.Globalization;
 namespace PdfLibSharp.Drawing;
 
-public readonly struct Color
+public readonly record struct Color(uint Argb)
 {
-    private readonly uint _argb;
-
-    internal Color(uint argb)
-    {
-        _argb = argb;
-    }
-
-    public uint Argb { get; }
-
     public static Color FromHex(string hexColor)
     {
         hexColor = hexColor.Replace("#", "");

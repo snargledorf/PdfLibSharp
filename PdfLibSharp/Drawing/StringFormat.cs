@@ -1,6 +1,4 @@
 using PdfLibSharp.Elements;
-using PdfLibSharp.Elements.Content;
-using PdfSharp.Drawing;
 
 namespace PdfLibSharp.Drawing;
 
@@ -20,15 +18,17 @@ public sealed class StringFormat
 
     public static readonly StringFormat Center = XStringFormats.Center;
 
-
-    private StringFormat(XStringFormat stringFormat)
+    public LineAlignment LineAlignment
     {
-        _stringFormat = stringFormat;
+        get;
+        set;
     }
 
-    public LineAlignment LineAlignment => (LineAlignment)_stringFormat.LineAlignment;
-
-    public StringAlignment Alignment => (StringAlignment)_stringFormat.Alignment;
+    public StringAlignment Alignment
+    {
+        get;
+        set;
+    }
 
     public static implicit operator XStringFormat(StringFormat stringFormat) => stringFormat._stringFormat;
     public static implicit operator StringFormat(XStringFormat stringFormat) => new(stringFormat);

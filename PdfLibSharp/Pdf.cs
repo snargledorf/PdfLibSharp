@@ -27,7 +27,7 @@ public sealed class Pdf(IDrawingLoaders drawingLoaders)
         set => _defaultStringFormat = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public Color DefaultFontColor { get; set; } = Color.Black;
+    public Color DefaultFontColor { get; set; } = StandardColors.Black;
     public double DefaultLineHeight { get; set; } = 1;
 
     public IPage AddPage()
