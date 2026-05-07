@@ -20,7 +20,11 @@ public class SkiaPdfDocument(SKDocument skDocument, Stream stream, int ppi) : IP
     {
         skDocument.Close();
         skDocument.Dispose();
-        await stream.DisposeAsync();
+        
+        if (stream is IAsyncDisposable streamAsyncDisposable)
+            await streamAsyncDisposable.DisposeAsync();
+        else
+            stream.Dispose();
         
         GC.SuppressFinalize(this);
     }
