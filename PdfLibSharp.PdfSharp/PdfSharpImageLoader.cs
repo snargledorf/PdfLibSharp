@@ -12,12 +12,12 @@ public class PdfSharpImageLoader : IImageLoader
     
     public static PdfSharpImageLoader Instance { get; } = new();
 
-    public IImage LoadImageFromFile(string filePath)
+    public Image LoadImageFromFile(string filePath)
     {
         return new PdfSharpImage(XImage.FromFile(filePath));
     }
 
-    public IImage LoadImageFromStream(Stream stream)
+    public Image LoadImageFromStream(Stream stream)
     {
         return new PdfSharpImage(XImage.FromStream(stream));
     }

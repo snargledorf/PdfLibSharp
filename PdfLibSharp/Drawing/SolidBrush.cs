@@ -1,16 +1,6 @@
-using PdfSharp.Drawing;
-
 namespace PdfLibSharp.Drawing;
 
-public class SolidBrush : Brush
+public abstract class SolidBrush(Color color) : Brush
 {
-    private SolidBrush(XSolidBrush brush) 
-        : base(brush)
-    {
-    }
-
-    public SolidBrush(Color color) 
-        : this(new XSolidBrush(color))
-    {
-    }
+    public Color Color { get; } = color;
 }

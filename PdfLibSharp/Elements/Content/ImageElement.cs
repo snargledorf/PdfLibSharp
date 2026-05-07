@@ -2,7 +2,7 @@ using PdfLibSharp.Drawing;
 
 namespace PdfLibSharp.Elements.Content;
 
-internal class ImageElement(IImage image) : BaseBorderElement, IImageElement
+internal class ImageElement(Image image) : BaseBorderElement, IImageElement
 {
-    public IImage Image { get; } = image;
+    public Image Image { get; } = image;
 }

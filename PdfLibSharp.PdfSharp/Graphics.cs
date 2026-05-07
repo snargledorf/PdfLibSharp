@@ -14,8 +14,6 @@ public sealed class Graphics : IGraphics
         _backingGraphics = backingGraphics;
     }
     
-    public static IImageLoader ImageLoader { get; } = PdfSharpImageLoader.Instance;
-    
     public static IMeasureGraphics ForMeasure(Size size)
     {
         return new MeasureGraphics(XGraphics.CreateMeasureContext(size.ToXSize(), XGraphicsUnit.Point,
@@ -32,17 +30,20 @@ public sealed class Graphics : IGraphics
         return _backingGraphics.MeasureString(text, font.ToXFont()).ToSize();
     }
 
-    public void DrawImage(IImage image, Rectangle rect)
+    public void DrawImage(Image image, Rectangle rect)
     {
-        if (image is PdfSharpImage pdfSharpImage)
-            _backingGraphics.DrawImage(pdfSharpImage, rect);
-        else
+        if (image is not IPdfSharpImage pdfSharpImage)
             throw new ArgumentException("Only PdfSharpImage is supported for drawing");
+        
+        _backingGraphics.DrawImage(pdfSharpImage.Image, rect);
     }
 
     public void DrawString(string value, Font font, Brush brush, Rectangle rect, StringFormat format)
     {
-        _backingGraphics.DrawString(value, font, brush, rect, format);
+        if (brush is not IPdfSharpBrush pdfSharpBrush)
+            throw new ArgumentException("Brush is not a IPdfSharpBrush", nameof(brush));
+        
+        _backingGraphics.DrawString(value, font, pdfSharpBrush.XBrush, rect, format);
     }
 
     public void DrawLine(Pen pen, Point start, Point end)

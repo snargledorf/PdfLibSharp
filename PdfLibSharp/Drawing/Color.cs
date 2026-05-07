@@ -5,12 +5,14 @@ namespace PdfLibSharp.Drawing;
 
 public readonly struct Color
 {
-    private readonly XColor _color;
+    private readonly uint _argb;
 
-    private Color(XColor color)
+    private Color(uint argb)
     {
-        _color = color;
+        _argb = argb;
     }
+
+    public uint Argb { get; }
 
     public static Color FromHex(string hexColor)
     {
@@ -21,14 +23,10 @@ public readonly struct Color
         if (argb <= 0xFFFFFF)
             argb += 0xFF000000;
         
-        return XColor.FromArgb(argb);
+        return new Color(argb);
     }
 
-    public static implicit operator XColor(Color color) => color._color;
-
-    public static implicit operator Color(XColor color) => new(color);
-
-    public static readonly Color Black = XColors.Black;
+    public static readonly Color Black = new(0xFFFFFFFF);
     public static readonly Color Red = XColors.Red;
     public static readonly Color Blue = XColors.Blue;
     public static readonly Color LightGrey = XColors.LightGray;

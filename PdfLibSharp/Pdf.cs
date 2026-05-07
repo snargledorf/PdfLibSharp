@@ -3,13 +3,13 @@ using PdfLibSharp.Elements;
 
 namespace PdfLibSharp;
 
-public sealed class Pdf(IImageLoader imageLoader)
+public sealed class Pdf(IDrawingLoaders drawingLoaders)
 {
     private readonly List<IPage> _pages = [];
     private Font _defaultFont = new("Times New Roman", 12f);
     private StringFormat _defaultStringFormat = StringFormat.BaseLineLeft;
 
-    public IImageLoader ImageLoader { get; } = imageLoader;
+    public IDrawingLoaders DrawingLoaders { get; } = drawingLoaders;
     
     public Font DefaultFont
     {

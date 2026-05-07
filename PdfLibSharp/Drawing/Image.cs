@@ -1,6 +1,6 @@
 namespace PdfLibSharp.Drawing;
 
-public interface IImage
+public abstract class Image(Size size)
 {
-    Size Size { get; }
+    public Size Size { get; } = size;
 }

@@ -10,14 +10,14 @@ public static class ContainerExtensions
     {
         public IImageElement AddImage(string filePath)
         {
-            var imageContent = new ImageElement(container.Pdf.ImageLoader.LoadImageFromFile(filePath));
+            var imageContent = new ImageElement(container.Pdf.DrawingLoaders.ImageLoader.LoadImageFromFile(filePath));
             container.Add(imageContent);
             return imageContent;
         }
 
         public ITextElement AddText(string text)
         {
-            var textContent = new TextElement(text);
+            var textContent = new TextElement(text, container.Pdf.DrawingLoaders.BrushLoader.LoadSolidBrush(Color.Black));
             container.Add(textContent);
             return textContent;
         }

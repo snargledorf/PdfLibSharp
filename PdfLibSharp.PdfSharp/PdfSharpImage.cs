@@ -3,10 +3,7 @@ using PdfSharp.Drawing;
 
 namespace PdfLibSharp.PdfSharp;
 
-public class PdfSharpImage(XImage xImage) : IImage
+internal class PdfSharpImage(XImage xImage) : Image(xImage.Size.ToSize()), IPdfSharpImage
 {
-    private readonly XImage _xImage = xImage;
-    public Size Size => _xImage.Size.ToSize();
-
-    public static implicit operator XImage(PdfSharpImage pdfSharpImage) => pdfSharpImage._xImage;
+    public XImage Image => xImage;
 }
