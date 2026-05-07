@@ -1,16 +1,14 @@
-using PdfSharp.Drawing;
-
 namespace PdfLibSharp.Elements;
 
 [Flags]
 public enum FontStyles
 {
-    Normal = XFontStyleEx.Regular,
-    Bold = XFontStyleEx.Bold,
-    Italic = XFontStyleEx.Italic,
-    Underline = XFontStyleEx.Underline,
-    Strikeout = XFontStyleEx.Strikeout,
-    BoldItalic = XFontStyleEx.BoldItalic,
+    Normal,
+    Bold,
+    Italic,
+    BoldItalic = Bold | Italic,
+    Underline,
+    Strikeout,
 }
 
 internal static class FontStylesExtensions

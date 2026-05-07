@@ -1,10 +1,10 @@
-using PdfLibSharp.Rendering;
+using PdfLibSharp.Drawing;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace PdfLibSharp.Drawing;
+namespace PdfLibSharp.PdfSharp;
 
-internal sealed class Graphics : IGraphics
+public sealed class Graphics : IGraphics
 {
     private readonly XGraphics _backingGraphics;
 
@@ -15,7 +15,7 @@ internal sealed class Graphics : IGraphics
 
     public static IMeasureGraphics ForMeasure(Size size)
     {
-        return new MeasureGraphics(XGraphics.CreateMeasureContext(size, XGraphicsUnit.Point,
+        return new MeasureGraphics(XGraphics.CreateMeasureContext(size.ToXSize(), XGraphicsUnit.Point,
             XPageDirection.Downwards));
     }
 
@@ -26,7 +26,7 @@ internal sealed class Graphics : IGraphics
 
     public Size MeasureString(string text, Font font)
     {
-        return _backingGraphics.MeasureString(text, font);
+        return _backingGraphics.MeasureString(text, font.ToXFont()).ToSize();
     }
 
     public void DrawImage(Image image, Rectangle rect)

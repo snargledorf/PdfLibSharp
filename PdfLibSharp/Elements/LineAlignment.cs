@@ -1,6 +1,4 @@
-using PdfSharp.Drawing;
-
-namespace PdfLibSharp.Elements.Content;
+namespace PdfLibSharp.Elements;
 
 public enum LineAlignment
 {

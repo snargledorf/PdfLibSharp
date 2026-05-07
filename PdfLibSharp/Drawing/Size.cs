@@ -1,14 +1,7 @@
-using PdfLibSharp.Elements;
-using PdfSharp.Drawing;
-
 namespace PdfLibSharp.Drawing;
 
 public readonly record struct Size(Dimension Width, Dimension Height)
 {
-    public static implicit operator Size(XSize xSize) => new(xSize.Width, xSize.Height);
-
-    public static implicit operator XSize(Size size) => new(size.Width, size.Height);
-    
     public static Size operator +(Size a, Size b) => new(a.Width + b.Width, a.Height + b.Height);
     public static Size operator -(Size a, Size b) => new(a.Width - b.Width, a.Height - b.Height);
 

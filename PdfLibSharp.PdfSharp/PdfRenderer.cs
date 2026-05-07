@@ -1,9 +1,11 @@
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using PdfLibSharp.Drawing;
 using PdfLibSharp.Elements;
-using PdfLibSharp.Layout;
 using PdfSharp.Pdf;
 
-namespace PdfLibSharp.Rendering;
+namespace PdfLibSharp.PdfSharp;
 
 public static class PdfRenderer
 {
@@ -18,7 +20,7 @@ public static class PdfRenderer
                 cancellationToken.ThrowIfCancellationRequested();
                 
                 PdfPage pdfPage = pdfDocument.AddPage();
-                pdfPage.Size = pdf.DefaultPageSize;
+                pdfPage.Size = pdf.DefaultPageSize.ToPdfSharpPageSize();
 
                 Size pageSize = page.GetSize(pdf.DefaultPageSize.Size);
                 
