@@ -14,9 +14,9 @@ public sealed class Graphics : IGraphics
         _backingGraphics = backingGraphics;
     }
     
-    public static IMeasureGraphics ForMeasure(Size size)
+    public static IMeasureGraphics ForMeasure(XSize size)
     {
-        return new MeasureGraphics(XGraphics.CreateMeasureContext(size.ToXSize(), XGraphicsUnit.Point,
+        return new MeasureGraphics(XGraphics.CreateMeasureContext(size, XGraphicsUnit.Point,
             XPageDirection.Downwards));
     }
 
@@ -35,22 +35,22 @@ public sealed class Graphics : IGraphics
         if (image is not IPdfSharpImage pdfSharpImage)
             throw new ArgumentException("Only PdfSharpImage is supported for drawing");
         
-        _backingGraphics.DrawImage(pdfSharpImage.Image, rect);
+        _backingGraphics.DrawImage(pdfSharpImage.Image, rect.ToXRect());
     }
 
     public void DrawString(string value, Font font, Brush brush, Rectangle rect, StringFormat format)
     {
-        _backingGraphics.DrawString(value, font, brush.ToXBrush(), rect, format);
+        _backingGraphics.DrawString(value, font.ToXFont(), brush.ToXBrush(), rect.ToXRect(), format.ToXStringFormat());
     }
 
     public void DrawLine(Pen pen, Point start, Point end)
     {
-        _backingGraphics.DrawLine(pen, start, end);
+        _backingGraphics.DrawLine(pen.ToXPen(), start.ToXPoint(), end.ToXPoint());
     }
 
     public void DrawRectangle(Pen pen, Rectangle rect)
     {
-        _backingGraphics.DrawRectangle(pen, rect);
+        _backingGraphics.DrawRectangle(pen.ToXPen(), rect.ToXRect());
     }
 
     public void Dispose()

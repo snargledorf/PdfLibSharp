@@ -50,7 +50,7 @@ internal class StackLayoutModelFactory(ILayoutModelFactoryProvider layoutModelFa
             .Select(layout => layout.ContentModel.Size + layout.Margins.ToSize())
             .GetCombinedSize(stackContainer.Direction, stackContainer.Gap);
 
-        return new StackRenderModel(stackContainer, stackContainer.GetSize(contentSize), borderPen, childLayouts);
+        return new PdfSharpStackRenderModel(stackContainer, stackContainer.GetSize(contentSize), borderPen, childLayouts);
     }
 
     private Size GetFillElementsSizeConstraint(IReadOnlyList<IElement> childElements, Size constraints,

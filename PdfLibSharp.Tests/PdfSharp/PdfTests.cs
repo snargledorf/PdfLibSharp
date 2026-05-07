@@ -1,30 +1,31 @@
 using PdfLibSharp.Elements;
 using PdfLibSharp.Elements.Layout;
-using PdfLibSharp.Rendering;
+using PdfLibSharp.PdfSharp;
 
-namespace PdfLibSharp.Tests;
+namespace PdfLibSharp.Tests.PdfSharp;
 
 public class PdfTests
 {
     [Test]
-    public async Task BasicPdfRender()
+    public async Task PdfSharp_BasicPdfRender()
     {
-        var pdf = new Pdf();
+        var pdf = new Pdf(PdfSharpDrawingLoaders.Instance);
 
         IPage page = pdf.AddPage();
 
         page.AddText("Hello World");
 
         var memoryStream = new MemoryStream();
-        await PdfRenderer.RenderAsync(pdf, memoryStream);
+        var renderer = new PdfRenderer(PdfBuilder.Instance);
+        await renderer.RenderAsync(pdf, memoryStream);
         
         Assert.That(memoryStream.Length, Is.GreaterThan(0));
     }
 
     [Test]
-    public async Task SubStackRender()
+    public async Task PdfSharp_SubStackRender()
     {
-        var pdf = new Pdf();
+        var pdf = new Pdf(PdfSharpDrawingLoaders.Instance);
 
         IPage page = pdf.AddPage();
 
@@ -33,18 +34,20 @@ public class PdfTests
         stackContainer.AddText("Hello World");
 
         var memoryStream = new MemoryStream();
-        await PdfRenderer.RenderAsync(pdf, memoryStream);
+        var renderer = new PdfRenderer(PdfBuilder.Instance);
+        await renderer.RenderAsync(pdf, memoryStream);
         
         Assert.That(memoryStream.Length, Is.GreaterThan(0));
     }
 
     [Test]
-    public async Task ComplexPdf()
+    public async Task PdfSharp_ComplexPdf()
     {
-        Pdf pdf = ComplexPdfBuilder.GeneratePdf();
+        Pdf pdf = ComplexPdfBuilder.GeneratePdf(PdfSharpDrawingLoaders.Instance);
 
         var memoryStream = new MemoryStream();
-        await PdfRenderer.RenderAsync(pdf, memoryStream);
+        var renderer = new PdfRenderer(PdfBuilder.Instance);
+        await renderer.RenderAsync(pdf, memoryStream);
         
         Assert.That(memoryStream.Length, Is.GreaterThan(0));
     }

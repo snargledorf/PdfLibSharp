@@ -26,6 +26,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
+      <PackageReference Include="PDFsharp" Version="6.2.4" />
       <PackageReference Include="PolySharp" Version="1.15.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

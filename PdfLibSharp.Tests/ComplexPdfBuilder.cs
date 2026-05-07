@@ -10,9 +10,9 @@ public static class ComplexPdfBuilder
     private const string DefaultFontFamily = "Times New Roman";
     private const double DefaultFontSize = 12;
     
-    public static Pdf GeneratePdf()
+    public static Pdf GeneratePdf(IDrawingLoaders drawingLoaders)
     {
-        var pdf = new Pdf
+        var pdf = new Pdf(drawingLoaders)
         {
             DefaultFont = new Font(DefaultFontFamily, DefaultFontSize),
             DefaultPageSize = PageSize.A4,

@@ -11,7 +11,7 @@ internal class RenderLayoutFactoryProvider : IRenderLayoutFactoryProvider
             { typeof(TextContentModel), new TextRenderLayoutFactory() },
             { typeof(ImageContentModel), new ImageRenderLayoutFactory() },
             { typeof(LineContentModel), new LineRenderLayoutFactory() },
-            { typeof(StackRenderModel), new StackRenderLayoutFactory(this) }
+            { typeof(PdfSharpStackRenderModel), new StackRenderLayoutFactory(this) }
         };
     }
 

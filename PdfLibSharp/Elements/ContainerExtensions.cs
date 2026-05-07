@@ -17,7 +17,7 @@ public static class ContainerExtensions
 
         public ITextElement AddText(string text)
         {
-            var textContent = new TextElement(text, container.Pdf.DrawingLoaders.BrushLoader.LoadSolidBrush(StandardColors.Black));
+            var textContent = new TextElement(text);
             container.Add(textContent);
             return textContent;
         }

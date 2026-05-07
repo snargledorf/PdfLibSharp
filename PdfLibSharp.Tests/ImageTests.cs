@@ -1,16 +1,17 @@
 using PdfLibSharp.Drawing;
+using PdfLibSharp.PdfSharp;
 
 namespace PdfLibSharp.Tests;
 
 public class ImageTests
 {
     [Test]
-    public void ImageFromStream()
+    public void PdfSharp_ImageFromStream()
     {
         byte[] imageBytes = Convert.FromBase64String(Resources.PdfIcon);
         using var ms = new MemoryStream(imageBytes, 0, imageBytes.Length, false, true);
 
-        Image image = Image.FromStream(ms);
+        Image image = PdfSharpImageLoader.Instance.LoadImageFromStream(ms);
         Assert.That(image, Is.Not.Null);
         
         (Dimension width, Dimension height) = image.Size;

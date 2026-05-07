@@ -1,5 +1,4 @@
 using PdfLibSharp.Drawing;
-using PdfLibSharp.Elements;
 using PdfLibSharp.Elements.Content;
 using PdfLibSharp.Elements.Layout;
 using PdfLibSharp.Layout;
@@ -13,7 +12,7 @@ public class LayoutModelFactoryProviderTests
     [SetUp]
     public void Setup()
     {
-        _measureGraphics = Graphics.ForMeasure(PageSize.Letter.Size);
+        _measureGraphics = new MockMeasureGraphics();
     }
 
     [TearDown]
@@ -53,5 +52,17 @@ public class LayoutModelFactoryProviderTests
     {
         var layoutBuilderFactory = new LayoutModelFactoryProvider(_measureGraphics);
         layoutBuilderFactory.Dispose();
+    }
+
+    private sealed class MockMeasureGraphics : IMeasureGraphics
+    {
+        public Size MeasureString(string text, Font font)
+        {
+            return new Size(0, 0);
+        }
+
+        public void Dispose()
+        {
+        }
     }
 }

@@ -22,4 +22,29 @@ public static class DrawingExtensions
             };
         }
     }
+
+    extension(Rectangle rectangle)
+    {
+        public XRect ToXRect() => new(rectangle.TopLeft.X, rectangle.TopLeft.Y, rectangle.Size.Width,
+            rectangle.Size.Height);
+    }
+
+    extension(StringFormat stringFormat)
+    {
+        public XStringFormat ToXStringFormat() => new()
+        {
+            Alignment = (XStringAlignment)stringFormat.Alignment,
+            LineAlignment = (XLineAlignment)stringFormat.LineAlignment
+        };
+    }
+
+    extension(Pen pen)
+    {
+        public XPen ToXPen() => new(pen.Color.ToXColor(), pen.Width);
+    }
+    
+    extension(Point point)
+    {
+        public XPoint ToXPoint() => new(point.X, point.Y);
+    }
 }

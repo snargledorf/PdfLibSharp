@@ -5,13 +5,20 @@ namespace PdfLibSharp.Drawing;
 
 public readonly struct Dimension(double value, Unit unit) : IComparable<Dimension>, IEquatable<Dimension>
 {
-    private readonly Unit? _unit = unit;
+    public Unit Unit
+    {
+        get => field ?? Unit.Point;
+    } = unit;
 
-    public Unit Unit => _unit ?? Unit.Point;
-    
     public double Value { get; } = value;
 
     public double Points => Unit.ToPoints(Value);
+
+    public double Pixels => ToPixels();
+    
+    public double ToPixels(int ppi = UnitPixel.DefaultPixelsPerInch) => ToPixels(UnitPixel.ForPpi(ppi));
+    
+    public double ToPixels(UnitPixel unitPixel) => unitPixel.FromPoints(Points);
 
     public static Dimension operator +(Dimension left, Dimension right) =>
         new(left.Points + right.Points, Unit.Point);
@@ -27,7 +34,9 @@ public readonly struct Dimension(double value, Unit unit) : IComparable<Dimensio
 
     public static Dimension FromMillimeters(double millimeters) => new(millimeters, Unit.Millimeter);
     
-    public static Dimension FromPixels(int pixels, int ppi = UnitPixel.DefaultPixelsPerInch) => new(pixels, UnitPixel.ForPpi(ppi));
+    public static Dimension FromPixels(double pixels, int ppi = UnitPixel.DefaultPixelsPerInch) => FromPixels(pixels, UnitPixel.ForPpi(ppi));
+    
+    public static Dimension FromPixels(double pixels, UnitPixel unitPixel) => new(pixels, unitPixel);
 
     public void Deconstruct(out double value, out Unit unit)
     {

@@ -8,7 +8,7 @@ internal sealed class StackRenderLayoutFactory(IRenderLayoutFactoryProvider rend
 {
     protected override Content BuildContent(ContentModel contentModel, Rectangle contentBounds)
     {
-        if (contentModel is not StackRenderModel stackContentModel)
+        if (contentModel is not PdfSharpStackRenderModel stackContentModel)
             throw new ArgumentException("ContentModel must be a StackContentModel", nameof(contentModel));
         
         Size fillElementsSizeConstraint = StackLayoutUtilities.CalculateFillElementsSizeConstraint(

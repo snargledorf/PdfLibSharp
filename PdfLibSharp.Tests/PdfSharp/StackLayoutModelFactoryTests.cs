@@ -3,8 +3,9 @@ using PdfLibSharp.Elements;
 using PdfLibSharp.Elements.Content;
 using PdfLibSharp.Elements.Layout;
 using PdfLibSharp.Layout;
+using PdfLibSharp.PdfSharp;
 
-namespace PdfLibSharp.Tests;
+namespace PdfLibSharp.Tests.PdfSharp;
 
 public class StackLayoutModelFactoryTests
 {
@@ -17,8 +18,8 @@ public class StackLayoutModelFactoryTests
     [SetUp]
     public void Setup()
     {
-        _measureGraphics = Graphics.ForMeasure(LayoutSizeConstraints);
-        _layoutScope = new LayoutScope(new Font("Times New Roman", 12), 1.2, StringFormat.BaseLineLeft, Color.Black);
+        _measureGraphics = Graphics.ForMeasure(LayoutSizeConstraints.ToXSize());
+        _layoutScope = new LayoutScope(new Font("Times New Roman", 12), 1.2, StringFormat.BaseLineLeft, StandardColors.Black);
         _layoutModelFactoryProvider = new LayoutModelFactoryProvider(_measureGraphics);
     }
 
@@ -30,10 +31,12 @@ public class StackLayoutModelFactoryTests
     }
 
     [Test]
-    public void TextElementExpandsToFillWidthInVerticalStack()
+    public void PdfSharp_TextElementExpandsToFillWidthInVerticalStack()
     {
+        var pdf = new Pdf(PdfSharpDrawingLoaders.Instance);
+        
         // Arrange
-        var stackElement = new StackContainer(Direction.Vertical);
+        var stackElement = new StackContainer(Direction.Vertical, pdf);
         var textElement = new TextElement("Sample text")
         {
             Sizing = ElementSizing.ExpandToFillBounds

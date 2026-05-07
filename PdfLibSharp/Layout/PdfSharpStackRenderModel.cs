@@ -3,7 +3,7 @@ using PdfLibSharp.Elements.Layout;
 
 namespace PdfLibSharp.Layout;
 
-internal record StackRenderModel(
+internal record PdfSharpStackRenderModel(
     IStackContainer StackContainer,
     Size Size,
     Pen? BorderPen,
