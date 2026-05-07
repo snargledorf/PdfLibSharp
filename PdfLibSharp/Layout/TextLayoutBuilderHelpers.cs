@@ -57,9 +57,11 @@ internal static class TextLayoutBuilderHelpers
 
     private static IEnumerable<string> SplitBy(this IEnumerable<string> strs, string splitChar)
     {
+        char[] chars = splitChar.ToCharArray();
+        
         foreach (string str in strs)
         {
-            string[] words = str.Split(splitChar);
+            string[] words = str.Split(chars);
             bool firstWord = true;
             
             foreach (string word in words)
