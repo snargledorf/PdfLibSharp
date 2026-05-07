@@ -36,7 +36,7 @@ public static class ContainerExtensions
 
         public ILineElement AddLine(Dimension width)
         {
-            return container.AddLine(width, Color.Black);
+            return container.AddLine(width, StandardColors.Black);
         }
 
         public ILineElement AddLine(Dimension width, Color color)
