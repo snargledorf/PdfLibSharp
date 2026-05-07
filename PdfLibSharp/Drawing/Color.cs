@@ -1,13 +1,11 @@
 using System.Globalization;
-using PdfSharp.Drawing;
-
 namespace PdfLibSharp.Drawing;
 
 public readonly struct Color
 {
     private readonly uint _argb;
 
-    private Color(uint argb)
+    internal Color(uint argb)
     {
         _argb = argb;
     }
@@ -25,10 +23,4 @@ public readonly struct Color
         
         return new Color(argb);
     }
-
-    public static readonly Color Black = new(0xFFFFFFFF);
-    public static readonly Color Red = XColors.Red;
-    public static readonly Color Blue = XColors.Blue;
-    public static readonly Color LightGrey = XColors.LightGray;
-    public static readonly Color LightSlateGray = XColors.LightSlateGray;
 }
