@@ -4,19 +4,65 @@ namespace PdfLibSharp.Drawing;
 
 public sealed class StringFormat
 {
-    private readonly XStringFormat _stringFormat;
+    public static StringFormat BaseLineLeft => new()
+    {
+        LineAlignment = LineAlignment.Baseline,
+        Alignment = StringAlignment.Near
+    };
 
-    public static readonly StringFormat BaseLineLeft = XStringFormats.BaseLineLeft;
-
-    public static readonly StringFormat TopLeft = XStringFormats.TopLeft;
+    public static StringFormat TopLeft => new()
+    {
+        LineAlignment = LineAlignment.Near,
+        Alignment = StringAlignment.Near
+    };
     
-    public static readonly StringFormat TopCenter = XStringFormats.TopCenter;
-    
-    public static readonly StringFormat TopRight = XStringFormats.TopRight;
+    public static StringFormat TopCenter => new()
+    {
+        LineAlignment = LineAlignment.Near,
+        Alignment = StringAlignment.Center
+    };
 
-    public static readonly StringFormat CenterRight = XStringFormats.CenterRight;
+    public static StringFormat TopRight => new()
+    {
+        LineAlignment = LineAlignment.Near,
+        Alignment = StringAlignment.Far
+    };
 
-    public static readonly StringFormat Center = XStringFormats.Center;
+    public static StringFormat CenterLeft => new()
+    {
+        LineAlignment = LineAlignment.Center,
+        Alignment = StringAlignment.Near
+    };
+
+    public static StringFormat Center => new()
+    {
+        LineAlignment = LineAlignment.Center,
+        Alignment = StringAlignment.Center
+    };
+
+    public static StringFormat CenterRight => new()
+    {
+        LineAlignment = LineAlignment.Center,
+        Alignment = StringAlignment.Far
+    };
+
+    public static StringFormat BottomLeft => new()
+    {
+        LineAlignment = LineAlignment.Far,
+        Alignment = StringAlignment.Near
+    };
+
+    public static StringFormat BottomCenter => new()
+    {
+        LineAlignment = LineAlignment.Far,
+        Alignment = StringAlignment.Center
+    };
+
+    public static StringFormat BottomRight => new()
+    {
+        LineAlignment = LineAlignment.Far,
+        Alignment = StringAlignment.Far
+    };
 
     public LineAlignment LineAlignment
     {
@@ -29,7 +75,4 @@ public sealed class StringFormat
         get;
         set;
     }
-
-    public static implicit operator XStringFormat(StringFormat stringFormat) => stringFormat._stringFormat;
-    public static implicit operator StringFormat(XStringFormat stringFormat) => new(stringFormat);
 }
