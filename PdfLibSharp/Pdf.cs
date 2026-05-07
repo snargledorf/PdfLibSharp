@@ -14,11 +14,7 @@ public sealed class Pdf(IImageLoader imageLoader)
     public Font DefaultFont
     {
         get => _defaultFont;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            _defaultFont = value;
-        }
+        set => _defaultFont = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     public PageSize DefaultPageSize { get; set; } = PageSize.A4;
@@ -28,11 +24,7 @@ public sealed class Pdf(IImageLoader imageLoader)
     public StringFormat DefaultStringFormat
     {
         get => _defaultStringFormat;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            _defaultStringFormat = value;
-        }
+        set => _defaultStringFormat = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     public Color DefaultFontColor { get; set; } = Color.Black;
